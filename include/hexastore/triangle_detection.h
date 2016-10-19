@@ -18,12 +18,6 @@ struct DirectedTriangle
 
 };
 
-std::set<DirectedTriangle> findAllDirectedTriangles(Hexastore* store)
-{
-	std::set<DirectedTriangle> toReturn;
-		
-
-	return toReturn;
-}
+std::set<DirectedTriangle> findAllDirectedTriangles(Hexastore& store);
 
 #endif

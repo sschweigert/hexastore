@@ -2,18 +2,19 @@
 #include <hexastore/operations.h>
 #include <hexastore/csv.h>
 #include <hexastore/utility.h>
+#include <hexastore/datatypes.h>
 
 #define HEXASTORE_DATASET_SIZE 400000
 
-HexastoreDataType* createDataset(NameStore nameData, int length)
+std::vector<HexastoreDataType> createPersonDataset(NameStore nameData, int length)
 {
-	HexastoreDataType* toReturn;
+	std::vector<HexastoreDataType> toReturn(length);
 
-	toReturn = (HexastoreDataType*)malloc(length * sizeof(HexastoreDataType));	
 	for (int i = 0; i < length; i++)
 	{
-		int normalizedValue = i % nameData.numberOfNames;		
-		toReturn[i].value = nameData.names[normalizedValue];
+		int normalizedIndex = i % nameData.size();		
+
+		toReturn[i].value = &nameData[normalizedIndex];
 		toReturn[i].index = i;
 	}
 
@@ -23,8 +24,7 @@ HexastoreDataType* createDataset(NameStore nameData, int length)
 int main(int argc, char *argv[])
 {
 	NameStore nameData = read_name_store("../data/names.csv");
-	HexastoreDataType* hexastoreData = createDataset(nameData, HEXASTORE_DATASET_SIZE);
-	free(hexastoreData);
-	free_name_store(nameData);
+	std::vector<HexastoreDataType> hexastoreData = createPersonDataset(nameData, HEXASTORE_DATASET_SIZE);
+	
 	return 0;
 }

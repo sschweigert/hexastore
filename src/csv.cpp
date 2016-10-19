@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 NameStore read_name_store(char* filename)
 {
 	NameStore toReturn;
@@ -18,24 +19,12 @@ NameStore read_name_store(char* filename)
 	}
 	rewind(stream);
 
-	toReturn.names = (char**)malloc(num_lines * sizeof(char*));	
-	toReturn.numberOfNames = num_lines;
 	while (fgets(line, 1024, stream))
 	{
-		toReturn.names[current_line] = strdup(line);
+		toReturn.push_back(std::string(line));
 		current_line++;
 	}
 	fclose(stream);
 
 	return toReturn;	
-}
-
-void free_name_store(NameStore toDelete)
-{
-	int i;
-	for (i = 0; i < toDelete.numberOfNames; i++)
-	{
-		free(toDelete.names[i]);
-	}
-	free(toDelete.names);
 }
