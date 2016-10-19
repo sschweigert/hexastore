@@ -2,50 +2,33 @@
 #define _HEXASTORE_HEXASTORE_H_
 
 #include <hexastore/datatypes.h>
+#include <hexastore/internals.h>
 
-#include <map>
-#include <set>
-
+// Forward declare so I have more flexibility with ordering of this file
+class BottomNode;
+class MiddleNode;
+class RootNode;
 
 typedef enum { spo, sop, pso, pos, osp, ops } RootType;
-
-struct BottomNode 
-{
-
-	std::set<HexastoreDataType*> data;
-
-};
-
-struct MiddleNode 
-{
-
-	std::map<HexastoreDataType*, BottomNode> data;	
-
-};
-
-struct RootNode
-{
-
-	std::map<HexastoreDataType*, MiddleNode> data;
-
-};
-
-struct Triple
-{
-
-	HexastoreDataType* subject;
-
-	HexastoreDataType* predicate;
-
-	HexastoreDataType* object;
-
-};
 
 struct Hexastore
 {
 
-	RootNode roots[6];	
+	public:
+
+		void remove(HexastoreDataType* subject, HexastoreDataType* predicate, HexastoreDataType* object);
+
+		void insert(HexastoreDataType* subject, HexastoreDataType* predicate, HexastoreDataType* object);
+
+		bool contains(HexastoreDataType* subject, HexastoreDataType* predicate, HexastoreDataType* object);
+
+	private:
+
+		RootNode roots[6];	
+
 
 };
+
+
 
 #endif

@@ -3,8 +3,6 @@
 #include <vector>
 
 #include <hexastore/hexastore.h>
-#include <hexastore/operations.h>
-
 
 class AddingAndRemoving : public CxxTest::TestSuite
 {

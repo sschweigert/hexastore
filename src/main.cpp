@@ -1,5 +1,4 @@
 #include <hexastore/hexastore.h>
-#include <hexastore/operations.h>
 #include <hexastore/csv.h>
 #include <hexastore/utility.h>
 #include <hexastore/datatypes.h>

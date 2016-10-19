@@ -25,17 +25,17 @@ bool suite_AddingAndRemoving_init = false;
 static AddingAndRemoving suite_AddingAndRemoving;
 
 static CxxTest::List Tests_AddingAndRemoving = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_AddingAndRemoving( "hexastore_test.h", 9, "AddingAndRemoving", suite_AddingAndRemoving, Tests_AddingAndRemoving );
+CxxTest::StaticSuiteDescription suiteDescription_AddingAndRemoving( "hexastore_test.h", 7, "AddingAndRemoving", suite_AddingAndRemoving, Tests_AddingAndRemoving );
 
 static class TestDescription_suite_AddingAndRemoving_testInsertion : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_AddingAndRemoving_testInsertion() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 14, "testInsertion" ) {}
+ TestDescription_suite_AddingAndRemoving_testInsertion() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 12, "testInsertion" ) {}
  void runTest() { suite_AddingAndRemoving.testInsertion(); }
 } testDescription_suite_AddingAndRemoving_testInsertion;
 
 static class TestDescription_suite_AddingAndRemoving_testAddition2 : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_AddingAndRemoving_testAddition2() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 27, "testAddition2" ) {}
+ TestDescription_suite_AddingAndRemoving_testAddition2() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 25, "testAddition2" ) {}
  void runTest() { suite_AddingAndRemoving.testAddition2(); }
 } testDescription_suite_AddingAndRemoving_testAddition2;
 
