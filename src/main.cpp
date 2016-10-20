@@ -1,29 +1,44 @@
 #include <hexastore/hexastore.h>
-#include <hexastore/csv.h>
+#include <hexastore/datastore.h>
 #include <hexastore/utility.h>
 #include <hexastore/datatypes.h>
+#include <hexastore/output.h>
+#include <hexastore/triangle_detection.h>
 
-#define HEXASTORE_DATASET_SIZE 400000
+#include <iostream>
 
-std::vector<HexastoreDataType> createPersonDataset(NameStore nameData, int length)
+void cleanUp(std::vector<HexastoreDataType*>& data)
 {
-	std::vector<HexastoreDataType> toReturn(length);
-
-	for (int i = 0; i < length; i++)
+	for (auto& value : data)
 	{
-		int normalizedIndex = i % nameData.size();		
-
-		toReturn[i].value = &nameData[normalizedIndex];
-		toReturn[i].index = i;
+		delete value;
 	}
-
-	return toReturn;
 }
 
 int main(int argc, char *argv[])
 {
-	NameStore nameData = read_name_store("../data/names.csv");
-	std::vector<HexastoreDataType> hexastoreData = createPersonDataset(nameData, HEXASTORE_DATASET_SIZE);
-	
+	const int datasetSize = 4e1;
+	std::vector<HexastoreValueType> nameData = readNameCSV("../data/names.csv");
+
+	Hexastore hexastore;
+	std::vector<HexastoreDataType*> people = createPersonDataset(nameData, datasetSize);
+
+	for (int i = 0; i < datasetSize; i++)
+	{
+		int nextIndex1 = (i + 1) % datasetSize;
+		int nextIndex2 = (i + 2) % datasetSize;
+		hexastore.insert(people[i], people[nextIndex1], people[nextIndex2]);
+	}
+
+	hexastore.insert(people[2], people[1], people[0]);
+
+	std::vector<QueryNode*> directedTriangles = hexastore.getConnectedVertices(people[2], spo);
+
+	for (auto& query : directedTriangles)
+	{
+		std::cout << *query << std::endl;
+	}
+
+	cleanUp(people);
 	return 0;
 }

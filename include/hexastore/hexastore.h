@@ -4,6 +4,8 @@
 #include <hexastore/datatypes.h>
 #include <hexastore/internals.h>
 
+#include <vector>
+
 // Forward declare so I have more flexibility with ordering of this file
 class BottomNode;
 class MiddleNode;
@@ -22,7 +24,11 @@ struct Hexastore
 
 		bool contains(HexastoreDataType* subject, HexastoreDataType* predicate, HexastoreDataType* object);
 
-	private:
+		std::vector<QueryNode*> getConnectedVertices(HexastoreDataType* top, RootType rootType);
+
+		std::vector<QueryNode*> getConnections(HexastoreDataType* root, HexastoreDataType* bottom, RootType rootType);
+
+	public:
 
 		RootNode roots[6];	
 

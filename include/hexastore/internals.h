@@ -9,13 +9,11 @@ struct BottomNode
 
 	public:
 
-		bool contains(BottomNode* hexastore, HexastoreDataType* bottom);
+		bool contains(HexastoreDataType* bottom);
 
-		void insert(BottomNode* bottomNode, HexastoreDataType* bottom);
+		void insert(HexastoreDataType* bottom);
 
-		bool remove(BottomNode* bottomNode, HexastoreDataType* bottom);
-
-	private:
+		bool remove(HexastoreDataType* bottom);
 
 		std::set<HexastoreDataType*> data;
 
@@ -33,8 +31,6 @@ struct MiddleNode
 
 		bool remove(HexastoreDataType* middle, HexastoreDataType* bottom);
 
-	private:
-
 		std::map<HexastoreDataType*, BottomNode> data;	
 
 };
@@ -49,8 +45,6 @@ struct RootNode
 		void insert(HexastoreDataType* top, HexastoreDataType* middle, HexastoreDataType* bottom);
 
 		bool remove(HexastoreDataType* top, HexastoreDataType* middle, HexastoreDataType* bottom);
-
-	private:	
 
 		std::map<HexastoreDataType*, MiddleNode> data;
 

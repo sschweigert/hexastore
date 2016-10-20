@@ -1,4 +1,4 @@
-#include <hexastore/operations.h>
+#include <hexastore/hexastore.h>
 
 void BottomNode::insert(HexastoreDataType* bottom)
 {
@@ -68,7 +68,7 @@ bool BottomNode::remove(HexastoreDataType* bottom)
 	return (data.size() == 1);
 }
 
-bool MiddleNode::Remove(HexastoreDataType* middle, HexastoreDataType* bottom)
+bool MiddleNode::remove(HexastoreDataType* middle, HexastoreDataType* bottom)
 {
 	if (data.count(middle) == 1)
 	{
@@ -85,7 +85,7 @@ bool RootNode::remove(HexastoreDataType* top, HexastoreDataType* middle, Hexasto
 {
 	if (data.count(top) == 1)
 	{
-		bool nodesLeft = (rootNode->data[top]).remove(middle, bottom);
+		bool nodesLeft = (data[top]).remove(middle, bottom);
 		if (!nodesLeft)
 			data.erase(top);
 	}	
@@ -99,4 +99,51 @@ void Hexastore::remove(HexastoreDataType* subject, HexastoreDataType* predicate,
 	(roots[pos]).remove(predicate, object, subject);
 	(roots[ops]).remove(object, predicate, subject);
 	(roots[osp]).remove(object, subject, predicate);
+}
+
+std::vector<QueryNode*> Hexastore::getConnectedVertices(HexastoreDataType* top, RootType rootType)
+{
+	std::vector<QueryNode*> toReturn;
+
+	if (roots[rootType].data.count(top) == 1)
+	{
+		MiddleNode& middleNode  = roots[rootType].data[top];
+
+		for (auto& middleIteration : middleNode.data)
+		{
+			HexastoreDataType* middle = middleIteration.first;
+			for (auto& bottom : middleIteration.second.data)
+			{
+				QueryNode* newQueryResult = new QueryNode(middle);
+				newQueryResult->next = new QueryNode(bottom);	
+				toReturn.push_back(newQueryResult);
+			}
+		}
+	}
+
+	return toReturn;
+}
+
+std::vector<QueryNode*> Hexastore::getConnections(HexastoreDataType* root, HexastoreDataType* bottom, RootType rootType)
+{
+	std::vector<QueryNode*> toReturn;
+	
+	if (roots[rootType].data.count(root) == 1)
+	{
+		MiddleNode& middleNode = roots[rootType].data[root];
+		for (auto& connection : middleNode.data)
+		{
+			HexastoreDataType* edge = connection.first;
+			BottomNode& bottomNode = connection.second;
+
+			if (bottomNode.data.count(bottom) == 1)
+			{
+				QueryNode* newNode = new QueryNode(edge);
+				newNode->next = new QueryNode(bottom);
+				toReturn.push_back(newNode);
+			}
+		}
+	}
+
+	return toReturn;
 }

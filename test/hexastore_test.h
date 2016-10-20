@@ -3,27 +3,65 @@
 #include <vector>
 
 #include <hexastore/hexastore.h>
+#include <hexastore/datastore.h>
+#include <hexastore/triangle_detection.h>
 
 class AddingAndRemoving : public CxxTest::TestSuite
 {
 
 	public:
 
-		void testInsertion(void)
+		AddingAndRemoving()
 		{
-			/*
-			std::vector<Triple> data(10);
+			names = readNameCSV("../data/names.csv");
+		}
+	
+		void testInsertionRemoval(void)
+		{
 			Hexastore hexastore;
-			insert(&hexastore, (data[0].subject), (data[0].predicate), (data[0].object));
-			
-			TS_ASSERT(contains(&hexastore, (data[0].subject), (data[0].predicate), (data[0].object)));
-			TS_ASSERT(!contains(&hexastore, (data[1].subject), (data[1].predicate), (data[1].object)));
-			*/
+			std::vector<HexastoreDataType*> people = createPersonDataset(names, 1000);
+
+			hexastore.insert(people[0], people[1], people[2]);
+			hexastore.insert(people[1], people[2], people[3]);
+
+			// Make sure we can detect the insertion
+			TS_ASSERT(hexastore.contains(people[0], people[1], people[2]));
+
+			// Changing the order, this element isn't in the store
+			TS_ASSERT(!hexastore.contains(people[2], people[1], people[0]));
+
+			hexastore.remove(people[0], people[1], people[2]);
+
+			// Check to make sure it was correctly removed
+			TS_ASSERT(!hexastore.contains(people[0], people[1], people[2]));
+
+			// Make sure the second one wasn't accidently removed
+			TS_ASSERT(hexastore.contains(people[1], people[2], people[3]));
+
 			
 		}
 
-		void testAddition2(void)
+		void testDirectedTriangleDetection(void)
 		{
-			TS_ASSERT_EQUALS(true, true);
+			const int storeSize = 1000;
+			Hexastore hexastore;
+			std::vector<HexastoreDataType*> people = createPersonDataset(names, storeSize);
+			
+			for (int i = 0; i < 1000; i++)
+			{
+				int nextIndex1 = (i + 1) % 100;
+				int nextIndex2 = (i + 2) % 100;
+				hexastore.insert(people[i], people[nextIndex1], people[nextIndex2]);
+			}
+
+			hexastore.insert(people[2], people[1], people[0]);
+			
+			std::vector<QueryNode*> directedTriangles = findAllDirectedTriangles(hexastore);
+
+			TS_ASSERT(directedTriangles.size() == 1);
 		}
+
+	private:
+
+		std::vector<HexastoreValueType> names;
 };

@@ -25,19 +25,19 @@ bool suite_AddingAndRemoving_init = false;
 static AddingAndRemoving suite_AddingAndRemoving;
 
 static CxxTest::List Tests_AddingAndRemoving = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_AddingAndRemoving( "hexastore_test.h", 7, "AddingAndRemoving", suite_AddingAndRemoving, Tests_AddingAndRemoving );
+CxxTest::StaticSuiteDescription suiteDescription_AddingAndRemoving( "hexastore_test.h", 9, "AddingAndRemoving", suite_AddingAndRemoving, Tests_AddingAndRemoving );
 
-static class TestDescription_suite_AddingAndRemoving_testInsertion : public CxxTest::RealTestDescription {
+static class TestDescription_suite_AddingAndRemoving_testInsertionRemoval : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_AddingAndRemoving_testInsertion() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 12, "testInsertion" ) {}
- void runTest() { suite_AddingAndRemoving.testInsertion(); }
-} testDescription_suite_AddingAndRemoving_testInsertion;
+ TestDescription_suite_AddingAndRemoving_testInsertionRemoval() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 19, "testInsertionRemoval" ) {}
+ void runTest() { suite_AddingAndRemoving.testInsertionRemoval(); }
+} testDescription_suite_AddingAndRemoving_testInsertionRemoval;
 
-static class TestDescription_suite_AddingAndRemoving_testAddition2 : public CxxTest::RealTestDescription {
+static class TestDescription_suite_AddingAndRemoving_testDirectedTriangleDetection : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_AddingAndRemoving_testAddition2() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 25, "testAddition2" ) {}
- void runTest() { suite_AddingAndRemoving.testAddition2(); }
-} testDescription_suite_AddingAndRemoving_testAddition2;
+ TestDescription_suite_AddingAndRemoving_testDirectedTriangleDetection() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 44, "testDirectedTriangleDetection" ) {}
+ void runTest() { suite_AddingAndRemoving.testDirectedTriangleDetection(); }
+} testDescription_suite_AddingAndRemoving_testDirectedTriangleDetection;
 
 #include <cxxtest/Root.cpp>
 const char* CxxTest::RealWorldDescription::_worldName = "cxxtest";

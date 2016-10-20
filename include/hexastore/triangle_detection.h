@@ -2,22 +2,8 @@
 #define _HEXASTORE_TRIANGLE_DETECTION_H_
 
 #include <hexastore/hexastore.h>
+#include <hexastore/datatypes.h>
 
-struct DirectedTriangle
-{
-
-	/* The nodes that form the triangle */
-	HexastoreDataType* first;	
-	HexastoreDataType* second;	
-	HexastoreDataType* third;	
-
-	/* The edges connecting the nodes */
-	HexastoreDataType* firstToSecond;	
-	HexastoreDataType* secondToThird;	
-	HexastoreDataType* thirdToFirst;	
-
-};
-
-std::set<DirectedTriangle> findAllDirectedTriangles(Hexastore& store);
+std::vector<QueryNode*> findAllDirectedTriangles(Hexastore& store);
 
 #endif

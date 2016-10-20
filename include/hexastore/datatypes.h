@@ -2,6 +2,7 @@
 #define _HEXASTORE_DATATYPES_H_
 
 #include <string>
+#include <vector>
 
 // The concrete data associated with
 typedef std::string HexastoreValueType;
@@ -34,6 +35,40 @@ struct HexastoreDataType
 	// treating each one as a unique entry. 
 	HexastoreValueType* value;
 
+	HexastoreDataType(HexastoreValueType* value);
+
+	static int indexCounter;
+
 };
+
+struct QueryNode 
+{
+
+	HexastoreDataType* record;	
+
+	QueryNode* next;
+
+	QueryNode(HexastoreDataType* record) :
+	record(record),
+	next(NULL)
+	{}
+
+	~QueryNode()
+	{
+		if (next != NULL)
+			delete next;
+	}
+
+
+};
+
+inline void cleanUp(std::vector<QueryNode*> queryNodes)
+{
+	for (auto& node : queryNodes)
+	{
+		delete node;
+	}
+}
+
 
 #endif
