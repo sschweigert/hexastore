@@ -10,9 +10,9 @@ std::ostream& operator<<(std::ostream& os, const QueryNode& query)
 {
 	const QueryNode* currentQuery = &query;
 
-	do
+	while (currentQuery != NULL)
 	{
-		os << *(currentQuery->record);
+		os << *(currentQuery->record->value);
 
 		currentQuery = currentQuery->next;
 	
@@ -22,7 +22,7 @@ std::ostream& operator<<(std::ostream& os, const QueryNode& query)
 		}
 		
 
-	} while (currentQuery != NULL);
+	} 
 	
 	return os;
 }

@@ -138,8 +138,7 @@ std::vector<QueryNode*> Hexastore::getConnections(HexastoreDataType* root, Hexas
 
 			if (bottomNode.data.count(bottom) == 1)
 			{
-				QueryNode* newNode = new QueryNode(edge);
-				newNode->next = new QueryNode(bottom);
+				QueryNode* newNode = buildQuery(edge, bottom);
 				toReturn.push_back(newNode);
 			}
 		}

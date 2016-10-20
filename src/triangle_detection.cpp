@@ -25,10 +25,15 @@ std::vector<QueryNode*> findAllDirectedTriangles(Hexastore& store)
 			{
 				HexastoreDataType* connectedThirdNode = connectionToThird->next->record;
 				if (connectedThirdNode->index < connectedSecondNode->index || connectedThirdNode->index == topNode->index)
-					continue;
-
-				
-
+				{
+				}
+				else
+				{
+					QueryNode* newQuery = new QueryNode(topNode);					
+					newQuery->extend(connectionToSecond);
+					newQuery->extend(connectionToThird);
+					toReturn.push_back(newQuery);
+				}
 			}
 	
 		}

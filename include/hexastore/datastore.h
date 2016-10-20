@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 
-std::vector<HexastoreDataType*> createPersonDataset(std::vector<HexastoreValueType> nameData, int length);
+std::vector<HexastoreDataType*> createPersonDataset(std::vector<HexastoreValueType>& nameData, int length);
 
 /* Reads csv file and returns the lines as array of C string */
 std::vector<HexastoreValueType> readNameCSV(char* filename);

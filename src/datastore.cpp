@@ -3,8 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <algorithm>
+#include <string>
+#include <iostream>
 
-std::vector<HexastoreDataType*> createPersonDataset(std::vector<HexastoreValueType> nameData, int length)
+std::vector<HexastoreDataType*> createPersonDataset(std::vector<HexastoreValueType>& nameData, int length)
 {
 	std::vector<HexastoreDataType*> toReturn;
 
@@ -27,7 +30,6 @@ std::vector<HexastoreValueType> readNameCSV(char* filename)
 
 	char line[1024];
 	int num_lines = 0;
-	int current_line = 0;
 	while (fgets(line, 1024, stream))
 	{
 		num_lines++;
@@ -36,8 +38,9 @@ std::vector<HexastoreValueType> readNameCSV(char* filename)
 
 	while (fgets(line, 1024, stream))
 	{
-		toReturn.push_back(std::string(line));
-		current_line++;
+		std::string newString(line);
+		newString = newString.erase(newString.length() - 2);
+		toReturn.push_back(newString);
 	}
 	fclose(stream);
 
