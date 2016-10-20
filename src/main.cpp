@@ -8,23 +8,15 @@
 
 #include <iostream>
 
-void cleanUp(std::vector<HexastoreDataType*>& data)
-{
-	for (auto& value : data)
-	{
-		delete value;
-	}
-}
-
 int main(int argc, char *argv[])
 {
 	const int datasetSize = 4;
 	std::vector<HexastoreValueType> nameData = readNameCSV("../data/names.csv");
 
 	Hexastore hexastore;
-	std::vector<HexastoreDataType*> people = createPersonDataset(nameData, datasetSize);
+	DataSet people = createPersonDataset(nameData, datasetSize);
 
-	for (auto& data : people)
+	for (auto data : people)
 	{
 		std::cout << *data << std::endl;
 
@@ -49,6 +41,5 @@ int main(int argc, char *argv[])
 	}
 
 	cleanUp(directedTriangles);
-	cleanUp(people);
 	return 0;
 }

@@ -7,9 +7,9 @@
 #include <string>
 #include <iostream>
 
-std::vector<HexastoreDataType*> createPersonDataset(std::vector<HexastoreValueType>& nameData, int length)
+DataSet createPersonDataset(std::vector<HexastoreValueType>& nameData, int length)
 {
-	std::vector<HexastoreDataType*> toReturn;
+	DataSet toReturn;
 
 	for (int i = 0; i < length; i++)
 	{
