@@ -3,7 +3,10 @@
 
 #include <hexastore/hexastore.h>
 #include <hexastore/datatypes.h>
+#include <hexastore/query_chain.h>
 
-std::vector<QueryNode*> findAllDirectedTriangles(Hexastore& store);
+std::vector<QueryChain> findAllDirectedTriangles(Hexastore& store);
+
+std::vector<QueryChain> findDescendingTriangles(Hexastore& store, RootType rootNode);
 
 #endif

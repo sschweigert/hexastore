@@ -3,6 +3,7 @@
 
 #include <hexastore/datatypes.h>
 #include <hexastore/internals.h>
+#include <hexastore/query_chain.h>
 
 #include <vector>
 
@@ -24,9 +25,9 @@ struct Hexastore
 
 		bool contains(HexastoreDataType* subject, HexastoreDataType* predicate, HexastoreDataType* object);
 
-		std::vector<QueryNode*> getConnectedVertices(HexastoreDataType* top, RootType rootType);
+		std::vector<QueryChain> getConnectedVertices(HexastoreDataType* top, RootType rootType);
 
-		std::vector<QueryNode*> getConnections(HexastoreDataType* root, HexastoreDataType* bottom, RootType rootType);
+		std::vector<QueryChain> getConnections(HexastoreDataType* root, HexastoreDataType* bottom, RootType rootType);
 
 	public:
 

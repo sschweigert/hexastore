@@ -2,40 +2,52 @@
 
 #include <hexastore/hexastore.h>
 
-std::vector<QueryNode*> findAllDirectedTriangles(Hexastore& store)
+std::vector<QueryChain> findAllDirectedTriangles(Hexastore& store)
 {
-	std::vector<QueryNode*> toReturn;
+	std::vector<QueryChain> toReturn;
+	std::vector<QueryChain> opsTriangles = findDescendingTriangles(store, ops);
+	std::vector<QueryChain> spoTriangles = findDescendingTriangles(store, spo);
+	toReturn.insert(toReturn.end(), opsTriangles.begin(), opsTriangles.end());
+	toReturn.insert(toReturn.end(), spoTriangles.begin(), spoTriangles.end());
+	return toReturn;	
+}
 
-	for (auto& triangleRoot : store.roots[spo].data)
+std::vector<QueryChain> findDescendingTriangles(Hexastore& store, RootType rootType)
+{
+	std::vector<QueryChain> toReturn;
+
+	for (auto& triangleRoot : store.roots[rootType].data)
 	{
 		HexastoreDataType* topNode = triangleRoot.first;
 		MiddleNode& middleNode = triangleRoot.second;
-				
-		std::vector<QueryNode*> connectionsToSecond = store.getConnectedVertices(topNode, spo);
 
-		for (QueryNode* connectionToSecond : connectionsToSecond)
+		std::vector<QueryChain> connectionsToSecond = store.getConnectedVertices(topNode, rootType);
+
+		for (QueryChain& connectionToSecond : connectionsToSecond)
 		{
-			HexastoreDataType* connectedSecondNode = connectionToSecond->next->record;
-			if (connectedSecondNode->index < topNode->index)
+			if (*(connectionToSecond.back()) <= *topNode)
 				continue;
 
-			std::vector<QueryNode*> connectionsToThird = store.getConnectedVertices(connectedSecondNode, spo);
+			std::vector<QueryChain> connectionsToThird = store.getConnectedVertices(connectionToSecond.back(), rootType);
 
-			for (QueryNode* connectionToThird : connectionsToThird)
+			for (QueryChain connectionToThird : connectionsToThird)
 			{
-				HexastoreDataType* connectedThirdNode = connectionToThird->next->record;
-				if (connectedThirdNode->index < connectedSecondNode->index || connectedThirdNode->index == topNode->index)
+
+				if (*(connectionToThird.back()) <= *(connectionToSecond.back()))
+					continue;
+
+				std::vector<QueryChain> connectionsBackToRoot = store.getConnections(connectionToThird.back(), topNode, rootType);
+				for (QueryChain finalConnection : connectionsBackToRoot)
 				{
-				}
-				else
-				{
-					QueryNode* newQuery = new QueryNode(topNode);					
-					newQuery->extend(connectionToSecond);
-					newQuery->extend(connectionToThird);
-					toReturn.push_back(newQuery);
+					QueryChain newChain;
+					newChain.insert(topNode);					
+					newChain.extend(connectionToSecond);
+					newChain.extend(connectionToThird);
+					newChain.extend(finalConnection);
+					toReturn.push_back(newChain);
 				}
 			}
-	
+
 		}
 	}
 

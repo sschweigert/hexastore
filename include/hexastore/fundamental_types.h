@@ -1,6 +1,7 @@
 #ifndef _HEXASTORE_FUNAMENTAL_TYPES_H_
 #define _HEXASTORE_FUNAMENTAL_TYPES_H_
 
+#include <iostream>
 #include <string>
 
 // The concrete data associated with
@@ -37,6 +38,31 @@ struct HexastoreDataType
 	HexastoreDataType(HexastoreValueType* value);
 
 	static int indexCounter;
+
+	bool operator<(const HexastoreDataType& other)
+	{
+		return index < other.index;
+	}
+
+	bool operator>(const HexastoreDataType& other)
+	{
+		return index > other.index;
+	}
+	
+	bool operator<=(const HexastoreDataType& other)
+	{
+		return index <= other.index;	
+	}
+
+	bool operator>=(const HexastoreDataType& other)
+	{
+		return index >= other.index;	
+	}
+
+	bool operator==(const HexastoreDataType& other)
+	{
+		index == other.index;
+	}
 
 };
 

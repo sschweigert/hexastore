@@ -2,7 +2,7 @@
 
 std::ostream& operator<<(std::ostream& os, const HexastoreDataType& dataType)
 {
-	os << *(dataType.value);
+	os << (dataType.index);
 	return os;
 }
 
@@ -24,5 +24,19 @@ std::ostream& operator<<(std::ostream& os, const QueryNode& query)
 
 	} 
 	
+	return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const QueryChain& dataType)
+{
+	bool first = true;
+	for (auto data : dataType)
+	{
+		if (!first) os << " -> ";
+
+		os << *data;
+		
+		first = false;
+	}
 	return os;
 }
