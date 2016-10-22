@@ -15,6 +15,13 @@ class QueryChain
 			data.insert(data.end(), toAdd.begin(), toAdd.end());	
 		}
 
+		template <class ...Args>
+		void extend(const QueryChain& toAdd, Args... args)
+		{
+			extend(toAdd);
+			extend(args...);
+		}
+
 		void insert(HexastoreDataType* entry)
 		{
 			data.push_back(entry);

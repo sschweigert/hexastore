@@ -7,11 +7,13 @@
 #include <hexastore/relationships.h>
 #include <hexastore/query_chain.h>
 
+#include <string>
+
 #include <iostream>
 
 int main(int argc, char *argv[])
 {
-	
+
 	const int datasetSize = 4;
 	std::vector<HexastoreValueType> nameData = readNameCSV("../data/names.csv");
 
@@ -55,7 +57,7 @@ int main(int argc, char *argv[])
 	std::vector<QueryChain> directedTriangles = findAllDirectedTriangles(hexastore); 
 
 	//directedTriangles[1]->extend(directedTriangles[0])->extend(directedTriangles[1]);
-	
+
 	for (auto& query : directedTriangles)
 	{
 		std::cout << query << std::endl;
