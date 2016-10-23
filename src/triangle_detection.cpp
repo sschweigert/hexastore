@@ -6,6 +6,7 @@ std::vector<QueryChain> findAllDirectedTriangles(Hexastore& hexastore)
 {
 	std::vector<QueryChain> toReturn;
 	std::vector<QueryChain> opsTriangles = findDescendingTriangles(hexastore, ops);
+	std::vector<QueryChain> opsTriangles = findDescendingTriangles(hexastore, ops);
 	std::vector<QueryChain> spoTriangles = findDescendingTriangles(hexastore, spo);
 	toReturn.insert(toReturn.end(), opsTriangles.begin(), opsTriangles.end());
 	toReturn.insert(toReturn.end(), spoTriangles.begin(), spoTriangles.end());

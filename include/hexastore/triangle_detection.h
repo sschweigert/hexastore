@@ -10,6 +10,60 @@ std::vector<QueryChain> findAllDirectedTriangles(Hexastore& hexastore);
 
 std::vector<QueryChain> findDescendingTriangles(Hexastore& hexastore, RootType rootNode);
 
+struct DescendingNode
+{
+
+	static inline std::vector<QueryChain> getLeads(Hexastore& hexastore, QueryChain& querySoFar, RootType connectionType)
+	{
+		return hexastore.getConnectedVertices(querySoFar.back(), connectionType);
+	}
+
+	static inline bool acceptLead(QueryChain& lead, QueryChain& querySoFar)
+	{
+		HexastoreDataType* leadNode = lead.back();
+		HexastoreDataType* prevNode = *(querySoFar.end() - 2);
+
+		return (*leadNode <= *prevNode);
+	}	
+
+};
+
+struct ReturnToRoot 
+{
+
+	static inline std::vector<QueryChain> getLeads(Hexastore& hexastore, QueryChain& querySoFar, RootType connectionType)
+	{
+		return hexastore.getConnections(querySoFar.back(), querySoFar.front(), connectionType);
+	}
+
+	static inline bool acceptLead(QueryChain& lead, QueryChain& querySoFar)
+	{
+		return true;
+	}	
+
+};
+
+inline void runQuery(Hexastore& hexastore, std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
+{
+	buildingChain.push_back(querySoFar);
+}
+
+template <class SearchStrategy, class ...Args>
+void runQuery(Hexastore& hexastore, std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
+{
+	std::vector<QueryChain> leads = SearchStrategy::getLeads(hexastore, querySoFar, connectionType);
+	
+	for (QueryChain& lead : leads)
+	{
+		if (SearchStrategy::acceptLead(lead, querySoFar))
+		{
+			querySoFar.extend(lead);
+			runQuery<Args...>(hexastore, buildingChain, querySoFar, connectionType);
+			querySoFar.pop_back();
+			querySoFar.pop_back();
+		}
+	}
+}
 
 template <unsigned int N, class ...Args>
 struct descendNode
@@ -17,16 +71,16 @@ struct descendNode
 
 	void operator()(Hexastore& hexastore, std::vector<QueryChain>& buildingChain, HexastoreDataType* nextLevelNode, HexastoreDataType* topNode, RootType connectionType, Args... args)
 	{
-		std::vector<QueryChain> connectionsToSecond = hexastore.getConnectedVertices(nextLevelNode, connectionType);
+		std::vector<QueryChain> connections = hexastore.getConnectedVertices(nextLevelNode, connectionType);
 
-		for (QueryChain& connectionToSecond : connectionsToSecond)
+		for (QueryChain& connection : connections)
 		{
-			HexastoreDataType* connectedNode = connectionToSecond.back();
+			HexastoreDataType* connectedNode = connection.back();
 
 			if (*connectedNode <= *nextLevelNode)
 				continue;
 
-			descendNode<N - 1, QueryChain&, Args...>()(hexastore, buildingChain, connectedNode, topNode, connectionType, connectionToSecond, args...);
+			descendNode<N - 1, QueryChain&, Args...>()(hexastore, buildingChain, connectedNode, topNode, connectionType, connection, args...);
 		}
 	}
 

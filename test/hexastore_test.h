@@ -81,8 +81,31 @@ class AddingAndRemoving : public CxxTest::TestSuite
 		void testDirectedTriangleDetection(void)
 		{
 			Hexastore hexastore;
+			// Everybody is a friend of the person next to them
+			for (int i = 0; i < people.size(); i++)
+			{
+				int nextIndex = (i + 1) % people.size();
+				hexastore.insert(people[nextIndex], getFriend(), people[i]);
+			}
+
+			// Add more loop back from 2 -> 0
+			hexastore.insert(people[0], getFriend(), people[2]);
+
+			std::vector<QueryChain> directedTriangles = findAllDirectedTriangles(hexastore); 
+
+			QueryChain expectedResult(people[0], getFriend(), people[2], getFriend(), people[1], getFriend(), people[0]);
+			TS_ASSERT(expectedResult.cyclicEquivalent(directedTriangles.front()));
+			TS_ASSERT(directedTriangles.size() == 1);
+		}
+
+	private:
+
+		std::vector<HexastoreDataType*> people;
+		std::vector<HexastoreValueType> names;
+};
 
 			/*
+			// Printing dataset
 			   std::cout << "Dataset: " << std::endl;
 			   for (auto data : people)
 			   {
@@ -91,18 +114,8 @@ class AddingAndRemoving : public CxxTest::TestSuite
 			   }
 			   std::cout << "------------------------------" << std::endl;
 			 */
-
-			// Everybody is a friend of the person next to them
-			for (int i = 0; i < people.size(); i++)
-			{
-				int nextIndex = (i + 1) % people.size();
-				hexastore.insert(people[i], getFriend(), people[nextIndex]);
-			}
-
-			// Add more loop back from 2 -> 0
-			hexastore.insert(people[2], getFriend(), people[0]);
-
 			/*
+				// Print vector of query chains
 			   std::cout << "Relationships: " << std::endl;
 			   for (auto person : people)
 			   {
@@ -117,19 +130,4 @@ class AddingAndRemoving : public CxxTest::TestSuite
 			   }
 			 */
 
-			std::vector<QueryChain> directedTriangles = findAllDirectedTriangles(hexastore); 
 
-			QueryChain expectedResult(people[0], getFriend(), people[1], getFriend(), people[2], getFriend(), people[0]);
-			TS_ASSERT(expectedResult.cyclicEquivalent(directedTriangles.front()));
-			TS_ASSERT(directedTriangles.size() == 1);
-
-			// This shouldn't add any more cycles
-			hexastore.insert(people[2], getFriend(), people[1]);
-			TS_ASSERT(directedTriangles.size() == 1);
-		}
-
-	private:
-
-		std::vector<HexastoreDataType*> people;
-		std::vector<HexastoreValueType> names;
-};

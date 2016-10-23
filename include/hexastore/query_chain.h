@@ -76,6 +76,11 @@ class QueryChain
 			return data.front();
 		}
 
+		void pop_back()
+		{
+			data.pop_back();
+		}
+
 		bool cyclicEquivalent(const QueryChain& other)
 		{
 			// They are actually cycles
