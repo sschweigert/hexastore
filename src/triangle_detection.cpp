@@ -5,14 +5,21 @@
 std::vector<QueryChain> findAllDirectedTriangles(Hexastore& hexastore)
 {
 	std::vector<QueryChain> toReturn;
-	std::vector<QueryChain> opsTriangles = findDescendingTriangles(hexastore, ops);
-	std::vector<QueryChain> opsTriangles = findDescendingTriangles(hexastore, ops);
-	std::vector<QueryChain> spoTriangles = findDescendingTriangles(hexastore, spo);
-	toReturn.insert(toReturn.end(), opsTriangles.begin(), opsTriangles.end());
-	toReturn.insert(toReturn.end(), spoTriangles.begin(), spoTriangles.end());
+
+	RootType rootType = spo;
+
+	for (auto& triangleRoot : hexastore.roots[rootType].data)
+	{
+		HexastoreDataType* topNode = triangleRoot.first;
+		QueryChain buildingQuery;
+		buildingQuery.insert(topNode);
+		runQuery<DescendingNode, DescendingNode, ReturnToRoot, Push>(hexastore, toReturn, buildingQuery, rootType);
+		runQuery<AscendingNode, AscendingNode, ReturnToRoot, Push>(hexastore, toReturn, buildingQuery, rootType);
+	}
 	return toReturn;	
 }
 
+/*
 std::vector<QueryChain> findDescendingTriangles(Hexastore& hexastore, RootType rootType)
 {
 	std::vector<QueryChain> toReturn;
@@ -25,3 +32,4 @@ std::vector<QueryChain> findDescendingTriangles(Hexastore& hexastore, RootType r
 
 	return toReturn;
 }
+*/

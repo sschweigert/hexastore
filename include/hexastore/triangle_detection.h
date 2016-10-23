@@ -8,8 +8,6 @@
 
 std::vector<QueryChain> findAllDirectedTriangles(Hexastore& hexastore);
 
-std::vector<QueryChain> findDescendingTriangles(Hexastore& hexastore, RootType rootNode);
-
 struct DescendingNode
 {
 
@@ -21,9 +19,27 @@ struct DescendingNode
 	static inline bool acceptLead(QueryChain& lead, QueryChain& querySoFar)
 	{
 		HexastoreDataType* leadNode = lead.back();
-		HexastoreDataType* prevNode = *(querySoFar.end() - 2);
+		HexastoreDataType* prevNode = querySoFar.back();;
 
-		return (*leadNode <= *prevNode);
+		return (*leadNode < *prevNode);
+	}	
+
+};
+
+struct AscendingNode 
+{
+
+	static inline std::vector<QueryChain> getLeads(Hexastore& hexastore, QueryChain& querySoFar, RootType connectionType)
+	{
+		return hexastore.getConnectedVertices(querySoFar.back(), connectionType);
+	}
+
+	static inline bool acceptLead(QueryChain& lead, QueryChain& querySoFar)
+	{
+		HexastoreDataType* leadNode = lead.back();
+		HexastoreDataType* prevNode = querySoFar.back();;
+
+		return (*leadNode > *prevNode);
 	}	
 
 };
@@ -43,10 +59,8 @@ struct ReturnToRoot
 
 };
 
-inline void runQuery(Hexastore& hexastore, std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
-{
-	buildingChain.push_back(querySoFar);
-}
+struct Push 
+{};
 
 template <class SearchStrategy, class ...Args>
 void runQuery(Hexastore& hexastore, std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
@@ -63,6 +77,12 @@ void runQuery(Hexastore& hexastore, std::vector<QueryChain>& buildingChain, Quer
 			querySoFar.pop_back();
 		}
 	}
+}
+
+template <>
+inline void runQuery<Push>(Hexastore& hexastore, std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
+{
+	buildingChain.push_back(querySoFar);
 }
 
 template <unsigned int N, class ...Args>
