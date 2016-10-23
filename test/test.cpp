@@ -25,17 +25,23 @@ bool suite_AddingAndRemoving_init = false;
 static AddingAndRemoving suite_AddingAndRemoving;
 
 static CxxTest::List Tests_AddingAndRemoving = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_AddingAndRemoving( "hexastore_test.h", 9, "AddingAndRemoving", suite_AddingAndRemoving, Tests_AddingAndRemoving );
+CxxTest::StaticSuiteDescription suiteDescription_AddingAndRemoving( "hexastore_test.h", 11, "AddingAndRemoving", suite_AddingAndRemoving, Tests_AddingAndRemoving );
+
+static class TestDescription_suite_AddingAndRemoving_testCyclicalQueryChain : public CxxTest::RealTestDescription {
+public:
+ TestDescription_suite_AddingAndRemoving_testCyclicalQueryChain() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 23, "testCyclicalQueryChain" ) {}
+ void runTest() { suite_AddingAndRemoving.testCyclicalQueryChain(); }
+} testDescription_suite_AddingAndRemoving_testCyclicalQueryChain;
 
 static class TestDescription_suite_AddingAndRemoving_testInsertionRemoval : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_AddingAndRemoving_testInsertionRemoval() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 19, "testInsertionRemoval" ) {}
+ TestDescription_suite_AddingAndRemoving_testInsertionRemoval() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 58, "testInsertionRemoval" ) {}
  void runTest() { suite_AddingAndRemoving.testInsertionRemoval(); }
 } testDescription_suite_AddingAndRemoving_testInsertionRemoval;
 
 static class TestDescription_suite_AddingAndRemoving_testDirectedTriangleDetection : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_AddingAndRemoving_testDirectedTriangleDetection() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 44, "testDirectedTriangleDetection" ) {}
+ TestDescription_suite_AddingAndRemoving_testDirectedTriangleDetection() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 81, "testDirectedTriangleDetection" ) {}
  void runTest() { suite_AddingAndRemoving.testDirectedTriangleDetection(); }
 } testDescription_suite_AddingAndRemoving_testDirectedTriangleDetection;
 

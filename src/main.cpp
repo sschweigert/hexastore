@@ -20,7 +20,6 @@ int main(int argc, char *argv[])
 	Hexastore hexastore;
 	DataSet people = createPersonDataset(nameData, datasetSize);
 
-
 	std::cout << "Dataset: " << std::endl;
 	for (auto data : people)
 	{

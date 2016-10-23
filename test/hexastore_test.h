@@ -2,8 +2,10 @@
 
 #include <vector>
 
+#include <hexastore/query_chain.h>
 #include <hexastore/hexastore.h>
 #include <hexastore/datastore.h>
+#include <hexastore/relationships.h>
 #include <hexastore/triangle_detection.h>
 
 class AddingAndRemoving : public CxxTest::TestSuite
@@ -11,15 +13,51 @@ class AddingAndRemoving : public CxxTest::TestSuite
 
 	public:
 
-		AddingAndRemoving()
+		// Override function which setups the tests
+		void setUp()
 		{
 			names = readNameCSV("../data/names.csv");
+			people = createPersonDataset(names, 1000);
 		}
-	
+
+		void testCyclicalQueryChain(void)
+		{
+			QueryChain first;
+			first.insert(people[0]);
+			first.insert(people[1]);
+			first.insert(people[2]);
+			first.insert(people[0]);
+
+			QueryChain second;
+			second.insert(people[1]);
+			second.insert(people[2]);
+			second.insert(people[0]);
+
+			// Not equivalent, one element missing
+			TS_ASSERT(!first.cyclicEquivalent(second));
+
+			second.insert(people[1]);
+
+			// Element is added so now they're equivalent
+			TS_ASSERT(first.cyclicEquivalent(second));
+
+			// Should be equivalent to itself, of course
+			TS_ASSERT(first.cyclicEquivalent(first));
+
+			QueryChain third;
+			third.insert(people[0]);
+			third.insert(people[1]);
+			third.insert(people[4]);
+			third.insert(people[0]);
+
+			// Make sure no false positives
+			TS_ASSERT(!first.cyclicEquivalent(third));
+
+		}
+
 		void testInsertionRemoval(void)
 		{
 			Hexastore hexastore;
-			std::vector<HexastoreDataType*> people = createPersonDataset(names, 1000);
 
 			hexastore.insert(people[0], people[1], people[2]);
 			hexastore.insert(people[1], people[2], people[3]);
@@ -38,32 +76,60 @@ class AddingAndRemoving : public CxxTest::TestSuite
 			// Make sure the second one wasn't accidently removed
 			TS_ASSERT(hexastore.contains(people[1], people[2], people[3]));
 
-			
 		}
 
 		void testDirectedTriangleDetection(void)
 		{
-			const int storeSize = 1000;
 			Hexastore hexastore;
-			std::vector<HexastoreDataType*> people = createPersonDataset(names, storeSize);
-			
-			for (int i = 0; i < 1000; i++)
+
+			/*
+			   std::cout << "Dataset: " << std::endl;
+			   for (auto data : people)
+			   {
+			   std::cout << *data << std::endl;
+
+			   }
+			   std::cout << "------------------------------" << std::endl;
+			 */
+
+			// Everybody is a friend of the person next to them
+			for (int i = 0; i < people.size(); i++)
 			{
-				int nextIndex1 = (i + 1) % 100;
-				int nextIndex2 = (i + 2) % 100;
-				hexastore.insert(people[i], people[nextIndex1], people[nextIndex2]);
+				int nextIndex = (i + 1) % people.size();
+				hexastore.insert(people[i], getFriend(), people[nextIndex]);
 			}
 
-			hexastore.insert(people[2], people[1], people[0]);
-			
-			/*
-			std::vector<QueryChain> directedTriangles = findAllDirectedTriangles(hexastore);
+			// Add more loop back from 2 -> 0
+			hexastore.insert(people[2], getFriend(), people[0]);
 
+			/*
+			   std::cout << "Relationships: " << std::endl;
+			   for (auto person : people)
+			   {
+			   std::vector<QueryChain> chains = hexastore.getConnectedVertices(person, spo);
+			   for (auto chain : chains)
+			   {
+			   QueryChain tempChain;
+			   tempChain.insert(person);
+			   tempChain.extend(chain);
+			   std::cout << tempChain << std::endl;
+			   }
+			   }
+			 */
+
+			std::vector<QueryChain> directedTriangles = findAllDirectedTriangles(hexastore); 
+
+			QueryChain expectedResult(people[0], getFriend(), people[1], getFriend(), people[2], getFriend(), people[0]);
+			TS_ASSERT(expectedResult.cyclicEquivalent(directedTriangles.front()));
 			TS_ASSERT(directedTriangles.size() == 1);
-			*/
+
+			// This shouldn't add any more cycles
+			hexastore.insert(people[2], getFriend(), people[1]);
+			TS_ASSERT(directedTriangles.size() == 1);
 		}
 
 	private:
 
+		std::vector<HexastoreDataType*> people;
 		std::vector<HexastoreValueType> names;
 };
