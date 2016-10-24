@@ -1,11 +1,9 @@
 #include <hexastore/hexastore.h>
 #include <hexastore/datastore.h>
-#include <hexastore/utility.h>
 #include <hexastore/datatypes.h>
 #include <hexastore/output.h>
 #include <hexastore/triangle_detection.h>
 #include <hexastore/relationships.h>
-#include <hexastore/query_chain.h>
 
 #include <string>
 

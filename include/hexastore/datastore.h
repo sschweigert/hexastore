@@ -2,6 +2,7 @@
 #define _HEXASTORE_DATASTORE_H_
 
 #include <hexastore/datatypes.h>
+#include <hexastore/dataset.h>
 
 #include <vector>
 #include <string>

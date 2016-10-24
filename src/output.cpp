@@ -6,27 +6,6 @@ std::ostream& operator<<(std::ostream& os, const HexastoreDataType& dataType)
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const QueryNode& query)
-{
-	const QueryNode* currentQuery = &query;
-
-	while (currentQuery != NULL)
-	{
-		os << *(currentQuery->record->value);
-
-		currentQuery = currentQuery->next;
-	
-		if (currentQuery != NULL)
-		{
-			os << " -> ";
-		}
-		
-
-	} 
-	
-	return os;
-}
-
 std::ostream& operator<<(std::ostream& os, const QueryChain& dataType)
 {
 	bool first = true;
