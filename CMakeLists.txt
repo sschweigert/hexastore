@@ -14,8 +14,10 @@ add_library(hexastore_lib
 )
 
 add_executable(main src/main.cpp )
+target_link_libraries(main hexastore_lib)
+
+add_executable(timing src/timing.cpp)
+target_link_libraries(timing hexastore_lib)
 
 add_executable(test test/test.cpp)
-
-target_link_libraries(main hexastore_lib)
 target_link_libraries(test hexastore_lib)
