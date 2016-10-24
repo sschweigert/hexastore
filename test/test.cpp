@@ -39,11 +39,23 @@ public:
  void runTest() { suite_AddingAndRemoving.testInsertionRemoval(); }
 } testDescription_suite_AddingAndRemoving_testInsertionRemoval;
 
-static class TestDescription_suite_AddingAndRemoving_testDirectedTriangleDetection : public CxxTest::RealTestDescription {
+static class TestDescription_suite_AddingAndRemoving_testForwardDirectedTriangleDetection : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_AddingAndRemoving_testDirectedTriangleDetection() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 81, "testDirectedTriangleDetection" ) {}
- void runTest() { suite_AddingAndRemoving.testDirectedTriangleDetection(); }
-} testDescription_suite_AddingAndRemoving_testDirectedTriangleDetection;
+ TestDescription_suite_AddingAndRemoving_testForwardDirectedTriangleDetection() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 81, "testForwardDirectedTriangleDetection" ) {}
+ void runTest() { suite_AddingAndRemoving.testForwardDirectedTriangleDetection(); }
+} testDescription_suite_AddingAndRemoving_testForwardDirectedTriangleDetection;
+
+static class TestDescription_suite_AddingAndRemoving_testReverseDirectedTriangleDetection : public CxxTest::RealTestDescription {
+public:
+ TestDescription_suite_AddingAndRemoving_testReverseDirectedTriangleDetection() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 101, "testReverseDirectedTriangleDetection" ) {}
+ void runTest() { suite_AddingAndRemoving.testReverseDirectedTriangleDetection(); }
+} testDescription_suite_AddingAndRemoving_testReverseDirectedTriangleDetection;
+
+static class TestDescription_suite_AddingAndRemoving_testThreeNodeDoubleTriangle : public CxxTest::RealTestDescription {
+public:
+ TestDescription_suite_AddingAndRemoving_testThreeNodeDoubleTriangle() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 125, "testThreeNodeDoubleTriangle" ) {}
+ void runTest() { suite_AddingAndRemoving.testThreeNodeDoubleTriangle(); }
+} testDescription_suite_AddingAndRemoving_testThreeNodeDoubleTriangle;
 
 #include <cxxtest/Root.cpp>
 const char* CxxTest::RealWorldDescription::_worldName = "cxxtest";

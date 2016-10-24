@@ -34,15 +34,15 @@ class AddingAndRemoving : public CxxTest::TestSuite
 			second.insert(people[0]);
 
 			// Not equivalent, one element missing
-			TS_ASSERT(!first.cyclicEquivalent(second));
+			TS_ASSERT(!cyclicEquivalent(first, second));
 
 			second.insert(people[1]);
 
 			// Element is added so now they're equivalent
-			TS_ASSERT(first.cyclicEquivalent(second));
+			TS_ASSERT(cyclicEquivalent(first, second));
 
 			// Should be equivalent to itself, of course
-			TS_ASSERT(first.cyclicEquivalent(first));
+			TS_ASSERT(cyclicEquivalent(first, first));
 
 			QueryChain third;
 			third.insert(people[0]);
@@ -51,7 +51,7 @@ class AddingAndRemoving : public CxxTest::TestSuite
 			third.insert(people[0]);
 
 			// Make sure no false positives
-			TS_ASSERT(!first.cyclicEquivalent(third));
+			TS_ASSERT(!cyclicEquivalent(first, third));
 
 		}
 
@@ -78,13 +78,33 @@ class AddingAndRemoving : public CxxTest::TestSuite
 
 		}
 
-		void testDirectedTriangleDetection(void)
+		void testForwardDirectedTriangleDetection(void)
 		{
 			Hexastore hexastore;
 			// Everybody is a friend of the person next to them
 			for (int i = 0; i < people.size(); i++)
 			{
 				int nextIndex = (i + 1) % people.size();
+				hexastore.insert(people[i], getFriend(), people[nextIndex]);
+			}
+
+			// Add more loop back from 2 -> 0
+			hexastore.insert(people[2], getFriend(), people[0]);
+
+			std::vector<QueryChain> directedTriangles = findAllDirectedTriangles(hexastore); 
+
+			QueryChain expectedResult(people[0], getFriend(), people[1], getFriend(), people[2], getFriend(), people[0]);
+			TS_ASSERT(cyclicEquivalent(expectedResult, directedTriangles.front()));
+			TS_ASSERT(directedTriangles.size() == 1);
+		}
+
+		void testReverseDirectedTriangleDetection(void)
+		{
+			Hexastore hexastore;
+			// Everybody is a friend of the person next to them
+			for (int i = 0; i < people.size(); i++)
+			{
+				int nextIndex = (i + 1) % 3;
 				hexastore.insert(people[nextIndex], getFriend(), people[i]);
 			}
 
@@ -93,10 +113,37 @@ class AddingAndRemoving : public CxxTest::TestSuite
 
 			std::vector<QueryChain> directedTriangles = findAllDirectedTriangles(hexastore); 
 
+			// Check that the triangle was detected
 			QueryChain expectedResult(people[0], getFriend(), people[2], getFriend(), people[1], getFriend(), people[0]);
-			TS_ASSERT(expectedResult.cyclicEquivalent(directedTriangles.front()));
+			TS_ASSERT(cyclicEquivalent(expectedResult, directedTriangles.front()));
+	
+			// No spurious triangles detected
 			TS_ASSERT(directedTriangles.size() == 1);
 		}
+
+		void testThreeNodeDoubleTriangle(void)
+		{
+			Hexastore hexastore;
+			// Everybody is a friend of the person next to them
+			for (int i = 0; i < 3; i++)
+			{
+				int nextIndex = (i + 1) % 3;
+				hexastore.insert(people[nextIndex], getFriend(), people[i]);
+				hexastore.insert(people[i], getFriend(), people[nextIndex]);
+			}
+
+			std::vector<QueryChain> directedTriangles = findAllDirectedTriangles(hexastore); 
+
+			// Check that the triangle was detected
+			QueryChain expectedResult1(people[0], getFriend(), people[1], getFriend(), people[2], getFriend(), people[0]);
+			QueryChain expectedResult2(people[0], getFriend(), people[2], getFriend(), people[1], getFriend(), people[0]);
+			TS_ASSERT(cyclicEquivalent(expectedResult2, directedTriangles.front()));
+			TS_ASSERT(cyclicEquivalent(expectedResult1, directedTriangles.back()));
+	
+			// No spurious triangles detected
+			TS_ASSERT(directedTriangles.size() == 2);
+		}
+
 
 	private:
 

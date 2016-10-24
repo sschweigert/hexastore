@@ -13,26 +13,28 @@ class QueryChain
 
 		typedef std::vector<HexastoreDataType*> Collection;
 
+		typedef Collection::const_iterator const_iterator;
+
 		QueryChain()
 		{}
 
 		template <class Val, class ...Args>
-		QueryChain(Val value, Args... args)
-		{
-			insert(value, args...);
-		}
-	
+			QueryChain(Val value, Args... args)
+			{
+				insert(value, args...);
+			}
+
 		void extend(const QueryChain& toAdd)
 		{
 			data.insert(data.end(), toAdd.begin(), toAdd.end());	
 		}
 
 		template <class ...Args>
-		void extend(const QueryChain& toAdd, Args... args)
-		{
-			extend(toAdd);
-			extend(args...);
-		}
+			void extend(const QueryChain& toAdd, Args... args)
+			{
+				extend(toAdd);
+				extend(args...);
+			}
 
 		void insert(HexastoreDataType* entry)
 		{
@@ -40,18 +42,18 @@ class QueryChain
 		}
 
 		template <class ...Args>
-		void insert(HexastoreDataType* entry, Args... args)
-		{
-			insert(entry);
-			insert(args...);
-		}
+			void insert(HexastoreDataType* entry, Args... args)
+			{
+				insert(entry);
+				insert(args...);
+			}
 
-		Collection::const_iterator begin() const
+		const_iterator begin() const
 		{
 			return data.begin();
 		}
 
-		Collection::const_iterator end() const
+		const_iterator end() const
 		{
 			return data.end();
 		}
@@ -60,7 +62,7 @@ class QueryChain
 		{
 			return data.back();	
 		}
-		
+
 		bool cyclic() const
 		{
 			return (data.front() == data.back());
@@ -81,95 +83,85 @@ class QueryChain
 			data.pop_back();
 		}
 
-		bool cyclicEquivalent(const QueryChain& other)
-		{
-			// They are actually cycles
-			if (!cyclic() || !other.cyclic())
-				return false;
-
-			// They are the same size
-			if (size() != other.size())
-				return false;
-
-			std::vector<Collection::const_iterator> otherIterators;
-
-			// Iterate up to the second last element. The last one will be a repeat of the first, 
-			// as was verified previously
-			for (auto localItr = begin(); localItr != (end() - 1); ++localItr)
-			{
-				
-				for (auto otherIteratorsItr = otherIterators.begin(); otherIteratorsItr != otherIterators.end();)
-				{
-					auto& otherItr = *otherIteratorsItr;
-
-					// Increment iterators
-					++otherItr;
-
-					if (otherItr == (other.end() - 1))
-					{
-						return true;
-					}
-
-
-					if (*localItr != *otherItr)
-					{
-						otherIteratorsItr = otherIterators.erase(otherIteratorsItr);
-					}
-					else
-					{
-						// This is here so that it is possible to remove elements while iterating
-						++otherIteratorsItr;
-					}
-						
-				}
-
-				// Start up a new iterator 
-				if (*localItr == other.front())
-				{
-					otherIterators.push_back(other.begin());
-				}
-
-			}	
-
-			for (auto localItr = begin(); localItr != (end() - 1); ++localItr)
-			{
-				// Quit early if possible
-				if (otherIterators.size() == 0)
-		 		{
-					break;
-				}
-				
-				for (auto otherIteratorsItr = otherIterators.begin(); otherIteratorsItr != otherIterators.end();)
-				{
-					auto& otherItr = *otherIteratorsItr;
-
-					// Increment iterators
-					++otherItr;
-		
-					if (otherItr == (other.end() - 1))
-					{
-						return true;
-					}
-
-					if (*localItr != *otherItr)
-					{
-						otherIteratorsItr = otherIterators.erase(otherIteratorsItr);
-					}
-					else
-					{
-						// This is here so that it is possible to remove elements while iterating
-						++otherIteratorsItr;
-					}
-						
-				}
-			}
-			return false;
-		}
 
 	private:
 
 		Collection data;	
 
 };
+
+inline bool checkIterators(std::vector<QueryChain::const_iterator>& otherIterators, QueryChain::const_iterator localItr, const QueryChain& other)
+{
+		for (auto otherIteratorsItr = otherIterators.begin(); otherIteratorsItr != otherIterators.end();)
+		{
+			auto& otherItr = *otherIteratorsItr;
+
+			// Increment iterators
+			++otherItr;
+
+			if (otherItr == (other.end() - 1))
+			{
+				return true;
+			}
+
+			if (*localItr != *otherItr)
+			{
+				otherIteratorsItr = otherIterators.erase(otherIteratorsItr);
+			}
+			else
+			{
+				// This is here so that it is possible to remove elements while iterating
+				++otherIteratorsItr;
+			}
+		}
+	return false;
+}
+
+inline bool cyclicEquivalent(const QueryChain& first, const QueryChain& other)
+{
+	// They are actually cycles
+	if (!first.cyclic() || !other.cyclic())
+		return false;
+
+	// They are the same size
+	if (first.size() != other.size())
+		return false;
+
+	std::vector<QueryChain::const_iterator> otherIterators;
+
+	// Iterate up to the second last element. The last one will be a repeat of the first, 
+	// as was verified previously
+	for (auto localItr = first.begin(); localItr != (first.end() - 1); ++localItr)
+	{
+
+		if (checkIterators(otherIterators, localItr, other))
+		{
+			return true;
+		}
+
+		// Start up a new iterator 
+		if (*localItr == other.front())
+		{
+			otherIterators.push_back(other.begin());
+		}
+
+	}	
+
+	for (auto localItr = first.begin(); localItr != (first.end() - 1); ++localItr)
+	{
+		// Quit early if possible
+		if (otherIterators.size() == 0)
+		{
+			break;
+		}
+
+		if (checkIterators(otherIterators, localItr, other))
+		{
+			return true;
+		}
+
+	}
+	return false;
+}
 
 #endif
