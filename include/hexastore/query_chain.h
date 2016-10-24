@@ -7,7 +7,7 @@
 #include <iostream>
 #include <algorithm>
 
-
+// A directed list of records
 class QueryChain
 {
 
@@ -65,11 +65,6 @@ class QueryChain
 			return data.back();	
 		}
 
-		bool cyclic() const
-		{
-			return (data.front() == data.back());
-		}
-
 		Collection::size_type size() const
 		{
 			return data.size();
@@ -91,7 +86,7 @@ class QueryChain
 		}
 
 
-	private:
+	public:
 
 		Collection data;	
 
@@ -99,8 +94,14 @@ class QueryChain
 
 typedef std::vector<QueryChain> QueryResult;
 
-bool checkIterators(std::vector<QueryChain::const_iterator>& otherIterators, QueryChain::const_iterator localItr, const QueryChain& other);
+// Check if a QueryChain is cyclic (end is same as start)
+bool cyclic(const QueryChain& chain);
 
+// Check if two cyclical QueryChains are equivalent. For example, 0 -> 1 -> 0 is equivalent to 1 -> 0 -> 1
+// Currently this is used in unit testing to check the results
 bool cyclicEquivalent(const QueryChain& first, const QueryChain& other);
+
+// A helper function for cyclicEquivalent. 
+bool checkIterators(std::vector<QueryChain::const_iterator>& otherIterators, QueryChain::const_iterator localItr, const QueryChain& other);
 
 #endif

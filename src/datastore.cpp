@@ -7,22 +7,6 @@
 #include <string>
 #include <iostream>
 
-DataSet createPersonDataset(std::vector<HexastoreValueType>& nameData, int length)
-{
-	DataSet toReturn;
-
-	for (int i = 0; i < length; i++)
-	{
-		int normalizedIndex = i % nameData.size();		
-
-		HexastoreDataType* newEntry = new HexastoreDataType(&nameData[normalizedIndex]);
-
-		toReturn.push_back(newEntry);
-	}
-
-	return toReturn;
-}
-
 std::vector<HexastoreValueType> readNameCSV(std::string filename)
 {
 	std::vector<HexastoreValueType> toReturn;

@@ -20,7 +20,7 @@ class AddingAndRemoving : public CxxTest::TestSuite
 			names = readNameCSV("../data/names.csv");
 	
 			// Make a data set of 1000 people to draw from
-			people = createPersonDataset(names, 1000);
+			people = DataSet(names, 1000);
 		}
 
 		void testCyclicalQueryChain(void)

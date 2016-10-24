@@ -1,12 +1,25 @@
 #include <hexastore/query_chain.h>
 
+bool cyclic(const QueryChain& chain)
+{
+	return chain.front() == chain.back();
+}
+
+// This function implemenets a simple pattern matching algorithm
+// A vector of iterators is maintained.
+// The first QueryChain is scanned. If the element matches other.front(),
+// then front.begin() is added to the vector of iterators.
+// Each element in this vector of iterators is incremented in each loop
+// if it matches the next value in the first QueryChain.
+// If any iterator in the vector reaches the end of its chain, then it has
+// matched the full pattern of the other chain.
 bool cyclicEquivalent(const QueryChain& first, const QueryChain& other)
 {
-	// They are actually cycles
-	if (!first.cyclic() || !other.cyclic())
+	// Check that they are actually cycles
+	if (!cyclic(first) || !cyclic(other))
 		return false;
 
-	// They are the same size
+	// Check they are the same size
 	if (first.size() != other.size())
 		return false;
 
@@ -49,27 +62,27 @@ bool cyclicEquivalent(const QueryChain& first, const QueryChain& other)
 
 bool checkIterators(std::vector<QueryChain::const_iterator>& otherIterators, QueryChain::const_iterator localItr, const QueryChain& other)
 {
-		for (auto otherIteratorsItr = otherIterators.begin(); otherIteratorsItr != otherIterators.end();)
+	for (auto otherIteratorsItr = otherIterators.begin(); otherIteratorsItr != otherIterators.end();)
+	{
+		auto& otherItr = *otherIteratorsItr;
+
+		// Increment iterators
+		++otherItr;
+
+		if (otherItr == (other.end() - 1))
 		{
-			auto& otherItr = *otherIteratorsItr;
-
-			// Increment iterators
-			++otherItr;
-
-			if (otherItr == (other.end() - 1))
-			{
-				return true;
-			}
-
-			if (*localItr != *otherItr)
-			{
-				otherIteratorsItr = otherIterators.erase(otherIteratorsItr);
-			}
-			else
-			{
-				// This is here so that it is possible to remove elements while iterating
-				++otherIteratorsItr;
-			}
+			return true;
 		}
+
+		if (*localItr != *otherItr)
+		{
+			otherIteratorsItr = otherIterators.erase(otherIteratorsItr);
+		}
+		else
+		{
+			// This is here so that it is possible to remove elements while iterating
+			++otherIteratorsItr;
+		}
+	}
 	return false;
 }

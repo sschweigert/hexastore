@@ -10,13 +10,9 @@ class DataSet : public std::vector<HexastoreDataType*>
 
 	public:
 
-		~DataSet()
-		{
-			for (auto& value : *this)
-			{
-				delete value;
-			}
-		}
+		DataSet(std::vector<HexastoreValueType>& nameData, int length);
+
+		~DataSet();
 
 };
 

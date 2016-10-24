@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 	std::vector<HexastoreValueType> nameData = readNameCSV("../data/names.csv");
 
 	Hexastore hexastore;
-	DataSet people = createPersonDataset(nameData, datasetSize);
+	DataSet people(nameData, datasetSize);
 
 	std::cout << "Dataset: " << std::endl;
 	std::cout << people << std::endl;

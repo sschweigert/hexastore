@@ -1,6 +1,8 @@
 #include <hexastore/triangle_detection.h>
 
 #include <hexastore/hexastore.h>
+#include <hexastore/generic_query.hpp>
+#include <hexastore/query_template_functions.hpp>
 
 std::vector<QueryChain> findDirectedTriangles(Hexastore& hexastore)
 {

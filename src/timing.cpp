@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 	std::vector<HexastoreValueType> nameData = readNameCSV("../data/names.csv");
 
 	Hexastore hexastore;
-	DataSet people = createPersonDataset(nameData, datasetSize);
+	DataSet people(nameData, datasetSize);
 
 	horizontalLine();
 	std::cout << "Element insertion:" << std::endl;
