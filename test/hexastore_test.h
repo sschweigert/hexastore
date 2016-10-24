@@ -16,7 +16,10 @@ class AddingAndRemoving : public CxxTest::TestSuite
 		// Override function which setups the tests
 		void setUp()
 		{
+			// Read names from a csv file
 			names = readNameCSV("../data/names.csv");
+	
+			// Make a data set of 1000 people to draw from
 			people = createPersonDataset(names, 1000);
 		}
 
@@ -144,37 +147,31 @@ class AddingAndRemoving : public CxxTest::TestSuite
 			TS_ASSERT(directedTriangles.size() == 2);
 		}
 
+		void testNonDirectedTriangles(void)
+		{
+			Hexastore hexastore;
+
+			for (int i = 0; i < people.size(); i++)
+			{
+				int nextIndex = (i + 1) % people.size();
+				hexastore.insert(people[i], getFriend(), people[nextIndex]);
+			}
+
+			hexastore.insert(people[0], getFriend(), people[2]);
+
+			auto nonDirectedTriangles = findNonDirectedTriangles(hexastore); 
+
+			QueryResult expectedResult;
+			expectedResult.push_back(QueryChain(people[0], getFriend(), people[1], getFriend(), people[2]));
+			expectedResult.push_back(QueryChain(people[0], getFriend(), people[2]));
+			TS_ASSERT(nonDirectedTriangles[0] == expectedResult);
+
+			// No spurious triangles detected
+			TS_ASSERT(nonDirectedTriangles.size() == 1);
+		}
 
 	private:
 
 		std::vector<HexastoreDataType*> people;
 		std::vector<HexastoreValueType> names;
 };
-
-			/*
-			// Printing dataset
-			   std::cout << "Dataset: " << std::endl;
-			   for (auto data : people)
-			   {
-			   std::cout << *data << std::endl;
-
-			   }
-			   std::cout << "------------------------------" << std::endl;
-			 */
-			/*
-				// Print vector of query chains
-			   std::cout << "Relationships: " << std::endl;
-			   for (auto person : people)
-			   {
-			   std::vector<QueryChain> chains = hexastore.getConnectedVertices(person, spo);
-			   for (auto chain : chains)
-			   {
-			   QueryChain tempChain;
-			   tempChain.insert(person);
-			   tempChain.extend(chain);
-			   std::cout << tempChain << std::endl;
-			   }
-			   }
-			 */
-
-

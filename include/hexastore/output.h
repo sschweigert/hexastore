@@ -8,6 +8,52 @@
 
 std::ostream& operator<<(std::ostream& os, const HexastoreDataType& dataType);
 
+template <typename DataType>
+std::ostream& operator<<(std::ostream& os, const std::vector<DataType>& collection)
+{
+	// Flag for commas
+	bool first = true;
+
+	os << "[";
+	for (auto& element : collection)
+	{
+		if (!first)
+		{
+			os << ", " << std::endl;
+		}
+
+		os << element;	
+
+		first = false;
+	}
+	os << "]";
+
+	return os;
+}
+
+template <typename DataType>
+std::ostream& operator<<(std::ostream& os, const std::vector<DataType*>& collection)
+{
+	// Flag for commas
+	bool first = true;
+
+	os << "[";
+	for (auto& element : collection)
+	{
+		if (!first)
+		{
+			os << ", " << std::endl;
+		}
+
+		os << *element;	
+
+		first = false;
+	}
+	os << "]";
+
+	return os;
+}
+
 std::ostream& operator<<(std::ostream& os, const QueryChain& dataType);
 
 

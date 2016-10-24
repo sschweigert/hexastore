@@ -40,9 +40,15 @@ std::vector<QueryResult> findNonDirectedTriangles(Hexastore& hexastore)
 			std::vector<QueryChain> connectionsToDouble = hexastore.getConnections(topNode, connection.back(), rootType);
 			for (auto& triangleClosingChain : connectionsToDouble)
 			{
+				// This is wasteful with resources and should be changed
+				QueryChain closingChain;
+				closingChain.insert(topNode);
+				closingChain.extend(triangleClosingChain);
+
 				QueryResult newResult;
 				newResult.push_back(connection);
-				newResult.push_back(triangleClosingChain);
+				newResult.push_back(closingChain);
+				toReturn.push_back(newResult);
 			}
 		}
 	}

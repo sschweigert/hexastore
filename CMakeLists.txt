@@ -11,6 +11,7 @@ add_library(hexastore_lib
 	src/hexastore.cpp 
 	src/datatypes.cpp 
 	src/output.cpp
+	src/query_chain.cpp
 )
 
 add_executable(main src/main.cpp )

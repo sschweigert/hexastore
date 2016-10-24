@@ -19,18 +19,13 @@ int main(int argc, char *argv[])
 	DataSet people = createPersonDataset(nameData, datasetSize);
 
 	std::cout << "Dataset: " << std::endl;
-	for (auto data : people)
-	{
-		std::cout << *data << std::endl;
-
-	}
+	std::cout << people << std::endl;
 	std::cout << "------------------------------" << std::endl;
-
 
 	for (int i = 0; i < people.size(); i++)
 	{
 		int nextIndex = (i + 1) % people.size();
-		hexastore.insert(people[nextIndex], getFriend(), people[i]);
+		hexastore.insert(people[i], getFriend(), people[nextIndex]);
 	}
 
 	hexastore.insert(people[0], getFriend(), people[2]);
@@ -50,15 +45,9 @@ int main(int argc, char *argv[])
 
 	std::cout << "Result: " << std::endl;
 
-	//std::vector<QueryChain> directedTriangles = hexastore.getConnectedVertices(people[2], spo);
-	std::vector<QueryChain> directedTriangles = findDirectedTriangles(hexastore); 
+	auto directedTriangles = findNonDirectedTriangles(hexastore); 
 
-	//directedTriangles[1]->extend(directedTriangles[0])->extend(directedTriangles[1]);
-
-	for (auto& query : directedTriangles)
-	{
-		std::cout << query << std::endl;
-	}
-
+	std::cout << directedTriangles << std::endl;
+	
 	return 0;
 }

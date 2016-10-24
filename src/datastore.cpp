@@ -23,10 +23,10 @@ DataSet createPersonDataset(std::vector<HexastoreValueType>& nameData, int lengt
 	return toReturn;
 }
 
-std::vector<HexastoreValueType> readNameCSV(char* filename)
+std::vector<HexastoreValueType> readNameCSV(std::string filename)
 {
 	std::vector<HexastoreValueType> toReturn;
-	FILE* stream = fopen(filename, "r");
+	FILE* stream = fopen(filename.c_str(), "r");
 
 	char line[1024];
 	int num_lines = 0;
