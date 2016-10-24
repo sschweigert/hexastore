@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 	std::cout << "Result: " << std::endl;
 
 	//std::vector<QueryChain> directedTriangles = hexastore.getConnectedVertices(people[2], spo);
-	std::vector<QueryChain> directedTriangles = findAllDirectedTriangles(hexastore); 
+	std::vector<QueryChain> directedTriangles = findDirectedTriangles(hexastore); 
 
 	//directedTriangles[1]->extend(directedTriangles[0])->extend(directedTriangles[1]);
 

@@ -3,8 +3,10 @@
 
 #include <hexastore/fundamental_types.h>
 
+#include <vector>
 #include <iostream>
 #include <algorithm>
+
 
 class QueryChain
 {
@@ -89,6 +91,8 @@ class QueryChain
 		Collection data;	
 
 };
+
+typedef std::vector<QueryChain> QueryResult;
 
 inline bool checkIterators(std::vector<QueryChain::const_iterator>& otherIterators, QueryChain::const_iterator localItr, const QueryChain& other)
 {

@@ -91,7 +91,7 @@ class AddingAndRemoving : public CxxTest::TestSuite
 			// Add more loop back from 2 -> 0
 			hexastore.insert(people[2], getFriend(), people[0]);
 
-			std::vector<QueryChain> directedTriangles = findAllDirectedTriangles(hexastore); 
+			std::vector<QueryChain> directedTriangles = findDirectedTriangles(hexastore); 
 
 			QueryChain expectedResult(people[0], getFriend(), people[1], getFriend(), people[2], getFriend(), people[0]);
 			TS_ASSERT(cyclicEquivalent(expectedResult, directedTriangles.front()));
@@ -111,7 +111,7 @@ class AddingAndRemoving : public CxxTest::TestSuite
 			// Add more loop back from 2 -> 0
 			hexastore.insert(people[0], getFriend(), people[2]);
 
-			std::vector<QueryChain> directedTriangles = findAllDirectedTriangles(hexastore); 
+			std::vector<QueryChain> directedTriangles = findDirectedTriangles(hexastore); 
 
 			// Check that the triangle was detected
 			QueryChain expectedResult(people[0], getFriend(), people[2], getFriend(), people[1], getFriend(), people[0]);
@@ -132,7 +132,7 @@ class AddingAndRemoving : public CxxTest::TestSuite
 				hexastore.insert(people[i], getFriend(), people[nextIndex]);
 			}
 
-			std::vector<QueryChain> directedTriangles = findAllDirectedTriangles(hexastore); 
+			std::vector<QueryChain> directedTriangles = findDirectedTriangles(hexastore); 
 
 			// Check that the triangle was detected
 			QueryChain expectedResult1(people[0], getFriend(), people[1], getFriend(), people[2], getFriend(), people[0]);

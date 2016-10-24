@@ -6,7 +6,9 @@
 #include <hexastore/query_chain.h>
 #include <hexastore/output.h>
 
-std::vector<QueryChain> findAllDirectedTriangles(Hexastore& hexastore);
+std::vector<QueryChain> findDirectedTriangles(Hexastore& hexastore);
+
+std::vector<QueryResult> findNonDirectedTriangles(Hexastore& hexastore);
 
 struct DescendingNode
 {
@@ -55,6 +57,21 @@ struct ReturnToRoot
 	static inline bool acceptLead(QueryChain& lead, QueryChain& querySoFar)
 	{
 		return true;
+	}	
+
+};
+
+struct NotRoot 
+{
+
+	static inline std::vector<QueryChain> getLeads(Hexastore& hexastore, QueryChain& querySoFar, RootType connectionType)
+	{
+		return hexastore.getConnectedVertices(querySoFar.back(), connectionType);
+	}
+
+	static inline bool acceptLead(QueryChain& lead, QueryChain& querySoFar)
+	{
+		return (lead.back() != querySoFar.front());
 	}	
 
 };
