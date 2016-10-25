@@ -1,22 +1,17 @@
 #include <hexastore/dataset.h>
 
-
-DataSet::~DataSet()
+Dataset buildDataset(std::vector<HexastoreValueType>& nameData, int length)
 {
-	for (auto& value : *this)
-	{
-		delete value;
-	}
-}
+	std::vector<HexastoreDataType> toReturn;
+	toReturn.reserve(length);
 
-DataSet::DataSet(std::vector<HexastoreValueType>& nameData, int length)
-{
 	for (int i = 0; i < length; i++)
 	{
 		int normalizedIndex = i % nameData.size();		
 
-		HexastoreDataType* newEntry = new HexastoreDataType(&nameData[normalizedIndex]);
+		HexastoreDataType newEntry(&nameData[normalizedIndex]);
 
-		push_back(newEntry);
+		toReturn.push_back(newEntry);
 	}
+	return toReturn;
 }

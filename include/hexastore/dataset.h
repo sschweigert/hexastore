@@ -5,15 +5,8 @@
 
 #include <vector>
 
-class DataSet : public std::vector<HexastoreDataType*>
-{
+typedef std::vector<HexastoreDataType> Dataset;
 
-	public:
-
-		DataSet(std::vector<HexastoreValueType>& nameData, int length);
-
-		~DataSet();
-
-};
+Dataset buildDataset(std::vector<HexastoreValueType>& nameData, int length);
 
 #endif
