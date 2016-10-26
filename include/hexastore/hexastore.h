@@ -7,11 +7,6 @@
 
 #include <vector>
 
-// Forward declare so I have more flexibility with ordering of this file
-class BottomNode;
-class MiddleNode;
-class RootNode;
-
 typedef enum { spo, sop, pso, pos, osp, ops } RootType;
 
 // This only exists as a placeholder in the template. I specialize it to push the
@@ -60,6 +55,7 @@ struct Hexastore
 
 
 };
+
 	template <class SearchStrategy, class ...Args>
 inline void Hexastore::runQuery(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
 {

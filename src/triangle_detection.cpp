@@ -1,7 +1,6 @@
 #include <hexastore/triangle_detection.h>
 
 #include <hexastore/hexastore.h>
-#include <hexastore/generic_query.hpp>
 #include <hexastore/query_template_functions.hpp>
 
 // This algorithm is based on the idea that triangles are either ascending or descending
@@ -32,7 +31,7 @@ std::vector<QueryResult> findNonDirectedTriangles(Hexastore& hexastore)
 
 		QueryChain buildingQuery;
 		buildingQuery.insert(topNode);
-		runQuery<NotRoot, NotRoot, Push>(hexastore, twoConnections, buildingQuery, rootType);
+		hexastore.runQuery<NotRoot, NotRoot, Push>(twoConnections, buildingQuery, rootType);
 
 		for (auto& connection : twoConnections)
 		{
