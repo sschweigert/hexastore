@@ -71,7 +71,6 @@ struct MiddleNode
 
 		bool remove(HexastoreDataType* middle, HexastoreDataType* bottom);
 
-		std::map<HexastoreDataType*, BottomNode> data;	
 
 		template <class Algorithm, class ...Args>
 			void insertConnections(std::vector<QueryChain>& toAdd, Args... args)
@@ -83,6 +82,10 @@ struct MiddleNode
 					bottomNode.insertConnections<Algorithm>(toAdd, edge, args...);
 				}
 			}
+
+	private:
+
+		std::map<HexastoreDataType*, BottomNode> data;	
 
 };
 
@@ -97,10 +100,19 @@ struct RootNode
 
 		bool remove(HexastoreDataType* top, HexastoreDataType* middle, HexastoreDataType* bottom);
 
-		std::vector<QueryChain> getConnectedVertices(HexastoreDataType* top);
+		template <class Algorithm, class ...Args>
+			std::vector<QueryChain> getConnections(HexastoreDataType* root, Args... args)
+			{
+				std::vector<QueryChain> toReturn;
 
+				if (data.count(root) == 1)
+				{
+					MiddleNode& middleNode = data[root];
+					middleNode.insertConnections<Algorithm>(toReturn, args...);
+				}
 
-		std::vector<QueryChain> getConnections(HexastoreDataType* root, HexastoreDataType* bottom);
+				return toReturn;
+			}
 
 
 		std::map<HexastoreDataType*, MiddleNode> data;
