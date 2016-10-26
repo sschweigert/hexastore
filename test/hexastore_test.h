@@ -145,8 +145,14 @@ class AddingAndRemoving : public CxxTest::TestSuite
 			// Check that the triangle was detected
 			QueryChain expectedResult1(people[0], getFriend(), people[1], getFriend(), people[2], getFriend(), people[0]);
 			QueryChain expectedResult2(people[0], getFriend(), people[2], getFriend(), people[1], getFriend(), people[0]);
-			TS_ASSERT(cyclicEquivalent(expectedResult2, directedTriangles.back()));
-			TS_ASSERT(cyclicEquivalent(expectedResult1, directedTriangles.front()));
+
+			bool one_is_front = cyclicEquivalent(expectedResult1, directedTriangles.front()) || 
+						cyclicEquivalent(expectedResult2, directedTriangles.front());
+
+			bool one_is_back = cyclicEquivalent(expectedResult1, directedTriangles.back()) || 
+						cyclicEquivalent(expectedResult2, directedTriangles.back());
+			TS_ASSERT(one_is_front);
+			TS_ASSERT(one_is_back);
 	
 			// No spurious triangles detected
 			TS_ASSERT(directedTriangles.size() == 2);

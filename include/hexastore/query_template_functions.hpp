@@ -68,17 +68,4 @@ struct NotRoot
 
 };
 
-// This only exists as a placeholder in the template. I specialize it to push the
-// query being built onto the vector of query chains.
-// It is meant to be the last item in the template list, and it finishes the chain.
-struct Push 
-{};
-
-// Specialization of runQuery which pushes 
-template <>
-inline void runQuery<Push>(Hexastore& hexastore, std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
-{
-	buildingChain.push_back(querySoFar);
-}
-
 #endif

@@ -1,6 +1,8 @@
 #ifndef _HEXASTORE_GENERIC_QUERY_H_
 #define _HEXASTORE_GENERIC_QUERY_H_
 
+#include <hexastore/hexastore.h>
+
 template <class SearchStrategy, class ...Args>
 void runQuery(Hexastore& hexastore, std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
 {
@@ -17,5 +19,14 @@ void runQuery(Hexastore& hexastore, std::vector<QueryChain>& buildingChain, Quer
 		}
 	}
 }
+
+
+// Specialization of runQuery which pushes 
+	template <>
+inline void runQuery<Push>(Hexastore& hexastore, std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
+{
+	buildingChain.push_back(querySoFar);
+}
+
 
 #endif
