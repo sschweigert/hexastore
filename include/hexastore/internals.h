@@ -17,6 +17,7 @@ struct BottomNode
 
 		std::set<HexastoreDataType*> data;
 
+		void buildQueryFromRecords(std::vector<QueryChain>& toAdd, HexastoreDataType* root);
 
 };
 
@@ -31,6 +32,7 @@ struct MiddleNode
 
 		bool remove(HexastoreDataType* middle, HexastoreDataType* bottom);
 
+void insertChildVertices(std::vector<QueryChain>& toAdd);
 		std::map<HexastoreDataType*, BottomNode> data;	
 
 };
@@ -45,6 +47,8 @@ struct RootNode
 		void insert(HexastoreDataType* top, HexastoreDataType* middle, HexastoreDataType* bottom);
 
 		bool remove(HexastoreDataType* top, HexastoreDataType* middle, HexastoreDataType* bottom);
+
+		std::vector<QueryChain> getConnectedVertices(HexastoreDataType* top);
 
 		std::map<HexastoreDataType*, MiddleNode> data;
 
