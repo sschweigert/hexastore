@@ -16,10 +16,10 @@ std::vector<QueryChain> findDirectedTriangles(Hexastore& hexastore)
 	RootType rootType = spo;
 
 	// Descending order
-	hexastore.runHexastoreQuery<DescendingNode, DescendingNode, ReturnToRoot>(toReturn, rootType);
+	hexastore.runQueryOnAllRoots<DescendingNode, DescendingNode, ReturnToRoot>(toReturn, rootType);
 
 	// Ascending order
-	hexastore.runHexastoreQuery<AscendingNode, AscendingNode, ReturnToRoot>(toReturn, rootType);
+	hexastore.runQueryOnAllRoots<AscendingNode, AscendingNode, ReturnToRoot>(toReturn, rootType);
 
 	return toReturn;	
 }

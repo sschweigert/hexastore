@@ -9,33 +9,32 @@
 
 typedef enum { spo, sop, pso, pos, osp, ops } RootType;
 
-// This only exists as a placeholder in the template. I specialize it to push the
-// query being built onto the vector of query chains.
-// It is meant to be the last item in the template list, and it finishes the chain.
-struct Push 
-{};
-
-
 struct Hexastore
 {
 
 	public:
 
-		void remove(HexastoreDataType* subject, HexastoreDataType* predicate, HexastoreDataType* object);
-
+		// Insert a Subject-Predicate-Object triplet into the hexastore
 		void insert(HexastoreDataType* subject, HexastoreDataType* predicate, HexastoreDataType* object);
 
+		// Check if a Subject-Predicate-Object triplet exists in the hexastore
 		bool contains(HexastoreDataType* subject, HexastoreDataType* predicate, HexastoreDataType* object);
 
+		// Remove a Subhect-Predicate-Object triplet from the hexastore
+		void remove(HexastoreDataType* subject, HexastoreDataType* predicate, HexastoreDataType* object);
+
+		// Obtain a vector containing all the connections to all the neighbor vertices of a chosen vertex
 		std::vector<QueryChain> getConnectedVertices(HexastoreDataType* top, RootType rootType);
 
+		// Obtain a vector containing all the connections between two vertices
 		std::vector<QueryChain> getConnections(HexastoreDataType* root, HexastoreDataType* bottom, RootType rootType);
 
 		template <class ...Args>
 			void runQuery(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType);
 
+		// Runs a query on all root nodes, one by one
 		template <class ...Args>
-			void runHexastoreQuery(std::vector<QueryChain>& buildingChain, RootType connectionType)
+			void runQueryOnAllRoots(std::vector<QueryChain>& buildingChain, RootType connectionType)
 			{
 				for (auto& triangleRoot : roots[connectionType].data)
 				{
@@ -57,13 +56,21 @@ struct Hexastore
 
 };
 
-template <class ...Args>
-	void Hexastore::runQuery(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
-	{
-		runQueryHelper<Args..., Push>(buildingChain, querySoFar, connectionType);
-	}
+// This only exists as a placeholder in the template. I specialize it to push the
+// query being built onto the vector of query chains.
+// It is meant to be the last item in the template list, and it finishes the chain.
+struct Push 
+{};
 
-// Specialization of runQuery which pushes 
+
+	template <class ...Args>
+void Hexastore::runQuery(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
+{
+	// Delegate to the helper function
+	runQueryHelper<Args..., Push>(buildingChain, querySoFar, connectionType);
+}
+
+// Specialization of runQuery which pushes the value to the vector, thereby ending the recursion
 	template <>
 inline void Hexastore::runQueryHelper<Push>(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
 {
@@ -74,6 +81,7 @@ inline void Hexastore::runQueryHelper<Push>(std::vector<QueryChain>& buildingCha
 	template <class SearchStrategy, class ...Args>
 inline void Hexastore::runQueryHelper(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
 {
+	// This is a relatively inefficient way of doing this
 	std::vector<QueryChain> leads = SearchStrategy::getLeads(*this, querySoFar, connectionType);
 
 	for (QueryChain& lead : leads)
