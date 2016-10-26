@@ -5,8 +5,33 @@
 
 #include <vector>
 
-typedef std::vector<HexastoreDataType> Dataset;
+// Defines a collection of records. Could contain a list of people in a database, for example.
+// Each record in the set is uniquely defined by a HexastoreDataType object stored in the vector.
+// This class is just used for building demonstrative data sets. It doesn't have a practical use.
+// The operator[] returns pointers to the elements in the dataset. These pointers are used with
+// the hexastore. The hexastore does manage the memory for the data, it just manipulates pointers
+// to the memory allocated elsewhere.
+class DataSet 
+{
 
-Dataset buildDataset(std::vector<HexastoreValueType>& nameData, int length);
+	public:
+
+		// \param nameData A vector of data to use to fill the data set. The value will
+		// repeat if nameData.size() < length, but the records will still be unique.
+		// \param length The number of records to generate in the dataset
+		DataSet(std::vector<HexastoreValueType>& nameData, int length);
+
+		// \brief The size of the dataset
+		std::size_t size() const;
+
+		// \brief Obtain a pointer to an element in the DataSet
+		HexastoreDataType* operator[](std::size_t idx);
+
+	private:
+
+		// Underlying storage mechanism
+		std::vector<HexastoreDataType> data;
+
+};
 
 #endif

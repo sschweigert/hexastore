@@ -1,17 +1,24 @@
 #include <hexastore/dataset.h>
 
-Dataset buildDataset(std::vector<HexastoreValueType>& nameData, int length)
+DataSet::DataSet(std::vector<HexastoreValueType>& nameData, int length)
 {
-	std::vector<HexastoreDataType> toReturn;
-	toReturn.reserve(length);
-
+	data.reserve(length);
 	for (int i = 0; i < length; i++)
 	{
 		int normalizedIndex = i % nameData.size();		
 
 		HexastoreDataType newEntry(&nameData[normalizedIndex]);
 
-		toReturn.push_back(newEntry);
+		data.push_back(newEntry);
 	}
-	return toReturn;
+}
+
+HexastoreDataType* DataSet::operator[](std::size_t idx)
+{
+	return &data[idx];
+}
+
+std::size_t DataSet::size() const
+{
+	return data.size();
 }

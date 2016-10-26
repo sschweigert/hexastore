@@ -16,32 +16,34 @@ int main(int argc, char *argv[])
 	std::vector<HexastoreValueType> nameData = readNameCSV("../data/names.csv");
 
 	Hexastore hexastore;
-	Dataset people = buildDataset(nameData, datasetSize);
+	DataSet people(nameData, datasetSize);
 
 	std::cout << "Dataset: " << std::endl;
-	std::cout << people << std::endl;
+	//std::cout << people << std::endl;
 	std::cout << "------------------------------" << std::endl;
 
 	for (int i = 0; i < people.size(); i++)
 	{
 		int nextIndex = (i + 1) % people.size();
-		hexastore.insert(&people[i], getFriend(), &people[nextIndex]);
+		hexastore.insert(people[i], getFriend(), people[nextIndex]);
 	}
 
-	hexastore.insert(&people[0], getFriend(), &people[2]);
+	hexastore.insert(people[0], getFriend(), people[2]);
 
 	std::cout << "Relationships: " << std::endl;
+	/*
 	for (auto person : people)
 	{
-		std::vector<QueryChain> chains = hexastore.getConnectedVertices(&person, spo);
+		std::vector<QueryChain> chains = hexastore.getConnectedVertices(person, spo);
 		for (auto chain : chains)
 		{
 			QueryChain tempChain;
-			tempChain.insert(&person);
+			tempChain.insert(person);
 			tempChain.extend(chain);
 			std::cout << tempChain << std::endl;
 		}
 	}
+	*/
 
 	std::cout << "Result: " << std::endl;
 

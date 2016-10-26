@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 	std::vector<HexastoreValueType> nameData = readNameCSV("../data/names.csv");
 
 	Hexastore hexastore;
-	Dataset people = buildDataset(nameData, datasetSize);
+	DataSet people(nameData, datasetSize);
 
 	horizontalLine();
 	std::cout << "Element insertion:" << std::endl;
@@ -34,9 +34,9 @@ int main(int argc, char *argv[])
 	{
 		int nextIndex = (i + 1) % people.size();
 		int nextNextIndex = (i + 2) % people.size();
-		hexastore.insert(&people[i], getFriend(), &people[nextIndex]);
-		hexastore.insert(&people[nextIndex], getFriend(), &people[i]);
-		hexastore.insert(&people[i], getFriend(), &people[nextNextIndex]);
+		hexastore.insert(people[i], getFriend(), people[nextIndex]);
+		hexastore.insert(people[nextIndex], getFriend(), people[i]);
+		hexastore.insert(people[i], getFriend(), people[nextNextIndex]);
 	}
 
 	std::cout << "Steps taken to insert elements: " << (std::clock() - start) << std::endl;
