@@ -7,9 +7,10 @@
 
 // Defines a collection of records. Could contain a list of people in a database, for example.
 // Each record in the set is uniquely defined by a HexastoreDataType object stored in the vector.
-// This class is just used for building demonstrative data sets. It doesn't have a practical use.
+// The contents of the vector cannot be changed after construction, so there is no concern that
+// the pointers will change due to the vector resizing.
 // The operator[] returns pointers to the elements in the dataset. These pointers are used with
-// the hexastore. The hexastore does manage the memory for the data, it just manipulates pointers
+// the hexastore. The hexastore does not manage the memory for the data, it just manipulates pointers
 // to the memory allocated elsewhere.
 class DataSet 
 {
