@@ -31,7 +31,7 @@ struct Hexastore
 
 		std::vector<QueryChain> getConnections(HexastoreDataType* root, HexastoreDataType* bottom, RootType rootType);
 
-		template <class SearchStrategy, class ...Args>
+		template <class ...Args>
 			void runQuery(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType);
 
 		template <class ...Args>
@@ -44,20 +44,35 @@ struct Hexastore
 					QueryChain buildingQuery;
 					buildingQuery.insert(topNode);
 
-					runQuery<Args..., Push>(buildingChain, buildingQuery, connectionType);
+					runQuery<Args...>(buildingChain, buildingQuery, connectionType);
 				}
 			}
 
+		RootNode roots[6];	
 
 	public:
 
-		RootNode roots[6];	
-
+		template <class SearchStrategy, class ...Args>
+			void runQueryHelper(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType);
 
 };
 
+template <class ...Args>
+	void Hexastore::runQuery(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
+	{
+		runQueryHelper<Args..., Push>(buildingChain, querySoFar, connectionType);
+	}
+
+// Specialization of runQuery which pushes 
+	template <>
+inline void Hexastore::runQueryHelper<Push>(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
+{
+	buildingChain.push_back(querySoFar);
+}
+
+
 	template <class SearchStrategy, class ...Args>
-inline void Hexastore::runQuery(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
+inline void Hexastore::runQueryHelper(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
 {
 	std::vector<QueryChain> leads = SearchStrategy::getLeads(*this, querySoFar, connectionType);
 
@@ -66,18 +81,11 @@ inline void Hexastore::runQuery(std::vector<QueryChain>& buildingChain, QueryCha
 		if (SearchStrategy::acceptLead(lead, querySoFar))
 		{
 			querySoFar.extend(lead);
-			this->runQuery<Args...>(buildingChain, querySoFar, connectionType);
+			this->runQueryHelper<Args...>(buildingChain, querySoFar, connectionType);
 			querySoFar.pop_back();
 			querySoFar.pop_back();
 		}
 	}
-}
-
-// Specialization of runQuery which pushes 
-	template <>
-inline void Hexastore::runQuery<Push>(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
-{
-	buildingChain.push_back(querySoFar);
 }
 
 

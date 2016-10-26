@@ -5,15 +5,22 @@
 
 // This algorithm is based on the idea that triangles are either ascending or descending
 // ie. 0 -> 1 -> 2 -> 0   or   2 -> 1 -> 0 -> 2
-
+// Any directed triangle can be expressed either as ascending from smallest node,
+// or descending from the largest node.
+// By only searching for triangles that start with these types of nodes, we can 
+// avoid duplicates.
 std::vector<QueryChain> findDirectedTriangles(Hexastore& hexastore)
 {
 	std::vector<QueryChain> toReturn;
 
 	RootType rootType = spo;
 
+	// Descending order
 	hexastore.runHexastoreQuery<DescendingNode, DescendingNode, ReturnToRoot>(toReturn, rootType);
+
+	// Ascending order
 	hexastore.runHexastoreQuery<AscendingNode, AscendingNode, ReturnToRoot>(toReturn, rootType);
+
 	return toReturn;	
 }
 
@@ -31,7 +38,9 @@ std::vector<QueryResult> findNonDirectedTriangles(Hexastore& hexastore)
 
 		QueryChain buildingQuery;
 		buildingQuery.insert(topNode);
-		hexastore.runQuery<NotRoot, NotRoot, Push>(twoConnections, buildingQuery, rootType);
+
+		// This query retrieve
+		hexastore.runQuery<NotRoot, NotRoot>(twoConnections, buildingQuery, rootType);
 
 		for (auto& connection : twoConnections)
 		{
