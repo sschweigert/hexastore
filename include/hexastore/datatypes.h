@@ -7,4 +7,6 @@
 // Type representing the result of a query
 #include <hexastore/query_chain.h>
 
+#include <hexastore/dataset.h>
+
 #endif

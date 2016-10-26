@@ -51,16 +51,4 @@ struct RootNode
 
 };
 
-
-struct Triple
-{
-
-	HexastoreDataType* subject;
-
-	HexastoreDataType* predicate;
-
-	HexastoreDataType* object;
-
-};
-
 #endif
