@@ -118,7 +118,7 @@ std::vector<QueryChain> RootNode::getConnectedVertices(HexastoreDataType* top)
 	if (data.count(top) == 1)
 	{
 		MiddleNode& middleNode  = data[top];
-		middleNode.insertChildVertices(toReturn);
+		middleNode.insertConnections<InsertAll>(toReturn);
 	}
 
 	return toReturn;
@@ -131,52 +131,8 @@ std::vector<QueryChain> RootNode::getConnections(HexastoreDataType* root, Hexast
 	if (data.count(root) == 1)
 	{
 		MiddleNode& middleNode = data[root];
-		middleNode.insertConnections(toReturn, bottom);
+		middleNode.insertConnections<InsertSpecific>(toReturn, bottom);
 	}
 
 	return toReturn;
 }
-
-void MiddleNode::insertConnections(std::vector<QueryChain>& toAdd, HexastoreDataType* bottom)
-{
-	for (auto& connection : data)
-	{
-		HexastoreDataType* edge = connection.first;
-		BottomNode& bottomNode = connection.second;
-		bottomNode.insertConnections<InsertSpecific>(toAdd, edge, bottom);
-	}
-}
-
-void MiddleNode::insertChildVertices(std::vector<QueryChain>& toAdd)
-{
-	for (auto& middleIteration : data)
-	{
-		HexastoreDataType* middle = middleIteration.first;
-		middleIteration.second.insertConnections<InsertAll>(toAdd, middle);	
-	}
-}
-
-/*
-void BottomNode::insertConnections(std::vector<QueryChain>& toAdd, HexastoreDataType* middle, HexastoreDataType* bottom)
-{
-	if (data.count(bottom) == 1)
-	{
-		QueryChain newNode; 
-		newNode.insert(middle);
-		newNode.insert(bottom);
-		toAdd.push_back(newNode);
-	}
-}
-
-void BottomNode::buildQueryFromRecords(std::vector<QueryChain>& toAdd, HexastoreDataType* root)
-{
-	for (auto& bottom : data)
-	{
-		QueryChain newChain;
-		newChain.insert(root);
-		newChain.insert(bottom);
-		toAdd.push_back(newChain);
-	}
-}
-*/
-

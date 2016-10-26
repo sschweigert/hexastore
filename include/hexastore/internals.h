@@ -7,13 +7,13 @@
 struct InsertSpecific
 {
 
-	void operator()(std::set<HexastoreDataType*>& data, std::vector<QueryChain>& toAdd, HexastoreDataType* middle, HexastoreDataType* bottom)
+	void operator()(std::set<HexastoreDataType*>& data, std::vector<QueryChain>& toAdd, HexastoreDataType* middle, HexastoreDataType* specificVal)
 	{
-		if (data.count(bottom) == 1)
+		if (data.count(specificVal) == 1)
 		{
 			QueryChain newNode; 
 			newNode.insert(middle);
-			newNode.insert(bottom);
+			newNode.insert(specificVal);
 			toAdd.push_back(newNode);
 		}
 	}
@@ -71,11 +71,18 @@ struct MiddleNode
 
 		bool remove(HexastoreDataType* middle, HexastoreDataType* bottom);
 
-		void insertChildVertices(std::vector<QueryChain>& toAdd);
-
 		std::map<HexastoreDataType*, BottomNode> data;	
 
-		void insertConnections(std::vector<QueryChain>& toAdd, HexastoreDataType* bottom);
+		template <class Algorithm, class ...Args>
+			void insertConnections(std::vector<QueryChain>& toAdd, Args... args)
+			{
+				for (auto& connection : data)
+				{
+					HexastoreDataType* edge = connection.first;
+					BottomNode& bottomNode = connection.second;
+					bottomNode.insertConnections<Algorithm>(toAdd, edge, args...);
+				}
+			}
 
 };
 
@@ -94,11 +101,11 @@ struct RootNode
 
 
 		std::vector<QueryChain> getConnections(HexastoreDataType* root, HexastoreDataType* bottom);
-	
+
 
 		std::map<HexastoreDataType*, MiddleNode> data;
 
-	
+
 
 };
 
