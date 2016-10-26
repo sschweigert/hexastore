@@ -101,24 +101,14 @@ void Hexastore::remove(HexastoreDataType* subject, HexastoreDataType* predicate,
 	(roots[osp]).remove(object, subject, predicate);
 }
 
-void BottomNode::buildQueryFromRecords(std::vector<QueryChain>& toAdd, HexastoreDataType* root)
+std::vector<QueryChain> Hexastore::getConnectedVertices(HexastoreDataType* top, RootType rootType)
 {
-	for (auto& bottom : data)
-	{
-		QueryChain newChain;
-		newChain.insert(root);
-		newChain.insert(bottom);
-		toAdd.push_back(newChain);
-	}
+	return roots[rootType].getConnectedVertices(top);
 }
 
-void MiddleNode::insertChildVertices(std::vector<QueryChain>& toAdd)
+std::vector<QueryChain> Hexastore::getConnections(HexastoreDataType* root, HexastoreDataType* bottom, RootType rootType)
 {
-	for (auto& middleIteration : data)
-	{
-		HexastoreDataType* middle = middleIteration.first;
-		middleIteration.second.buildQueryFromRecords(toAdd, middle);	
-	}
+	return roots[rootType].getConnections(root, bottom);
 }
 
 std::vector<QueryChain> RootNode::getConnectedVertices(HexastoreDataType* top)
@@ -134,32 +124,59 @@ std::vector<QueryChain> RootNode::getConnectedVertices(HexastoreDataType* top)
 	return toReturn;
 }
 
-std::vector<QueryChain> Hexastore::getConnectedVertices(HexastoreDataType* top, RootType rootType)
-{
-	return roots[rootType].getConnectedVertices(top);
-}
-
-std::vector<QueryChain> Hexastore::getConnections(HexastoreDataType* root, HexastoreDataType* bottom, RootType rootType)
+std::vector<QueryChain> RootNode::getConnections(HexastoreDataType* root, HexastoreDataType* bottom)
 {
 	std::vector<QueryChain> toReturn;
 
-	if (roots[rootType].data.count(root) == 1)
+	if (data.count(root) == 1)
 	{
-		MiddleNode& middleNode = roots[rootType].data[root];
-		for (auto& connection : middleNode.data)
-		{
-			HexastoreDataType* edge = connection.first;
-			BottomNode& bottomNode = connection.second;
-
-			if (bottomNode.data.count(bottom) == 1)
-			{
-				QueryChain newNode; 
-				newNode.insert(edge);
-				newNode.insert(bottom);
-				toReturn.push_back(newNode);
-			}
-		}
+		MiddleNode& middleNode = data[root];
+		middleNode.insertConnections(toReturn, bottom);
 	}
 
 	return toReturn;
 }
+
+void MiddleNode::insertConnections(std::vector<QueryChain>& toAdd, HexastoreDataType* bottom)
+{
+	for (auto& connection : data)
+	{
+		HexastoreDataType* edge = connection.first;
+		BottomNode& bottomNode = connection.second;
+		bottomNode.insertConnections<InsertSpecific>(toAdd, edge, bottom);
+	}
+}
+
+void MiddleNode::insertChildVertices(std::vector<QueryChain>& toAdd)
+{
+	for (auto& middleIteration : data)
+	{
+		HexastoreDataType* middle = middleIteration.first;
+		middleIteration.second.insertConnections<InsertAll>(toAdd, middle);	
+	}
+}
+
+/*
+void BottomNode::insertConnections(std::vector<QueryChain>& toAdd, HexastoreDataType* middle, HexastoreDataType* bottom)
+{
+	if (data.count(bottom) == 1)
+	{
+		QueryChain newNode; 
+		newNode.insert(middle);
+		newNode.insert(bottom);
+		toAdd.push_back(newNode);
+	}
+}
+
+void BottomNode::buildQueryFromRecords(std::vector<QueryChain>& toAdd, HexastoreDataType* root)
+{
+	for (auto& bottom : data)
+	{
+		QueryChain newChain;
+		newChain.insert(root);
+		newChain.insert(bottom);
+		toAdd.push_back(newChain);
+	}
+}
+*/
+
