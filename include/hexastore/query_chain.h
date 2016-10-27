@@ -30,17 +30,17 @@ class QueryChain
 			}
 
 		// Append another QueryChain onto this one.
-		void extend(const QueryChain& toAdd)
+		void insert(const QueryChain& toAdd)
 		{
 			data.insert(data.end(), toAdd.begin(), toAdd.end());	
 		}
 
 		// Append multiple QueryChain objects onto this one.
 		template <class ...Args>
-			void extend(const QueryChain& toAdd, Args... args)
+			void insert(const QueryChain& toAdd, Args... args)
 			{
-				extend(toAdd);
-				extend(args...);
+				insert(toAdd);
+				insert(args...);
 			}
 
 		// Insert a new entry onto the end of the QueryChain

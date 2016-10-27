@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 		{
 			QueryChain tempChain;
 			tempChain.insert(person);
-			tempChain.extend(chain);
+			tempChain.insert(chain);
 			std::cout << tempChain << std::endl;
 		}
 	}

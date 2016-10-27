@@ -24,6 +24,8 @@ std::vector<QueryChain> findDirectedTriangles(Hexastore& hexastore)
 	return toReturn;	
 }
 
+// This algorithm is based on the idea that nonDirectedTriangles have one chain of two and
+// one chain of one.   ie.   0 -> 1 -> 2 <- 0  
 std::vector<QueryResult> findNonDirectedTriangles(Hexastore& hexastore)
 {
 	std::vector<QueryResult> toReturn;
@@ -48,13 +50,12 @@ std::vector<QueryResult> findNonDirectedTriangles(Hexastore& hexastore)
 			for (auto& triangleClosingChain : connectionsToDouble)
 			{
 				// This is wasteful with resources and should be changed
-				QueryChain closingChain;
-				closingChain.insert(topNode);
-				closingChain.extend(triangleClosingChain);
+				QueryChain closingChain(topNode, triangleClosingChain);
 
 				QueryResult newResult;
 				newResult.push_back(connection);
 				newResult.push_back(closingChain);
+
 				toReturn.push_back(newResult);
 			}
 		}

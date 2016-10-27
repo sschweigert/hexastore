@@ -92,7 +92,7 @@ inline void Hexastore::runQueryHelper(std::vector<QueryChain>& buildingChain, Qu
 	{
 		if (SearchStrategy::acceptLead(lead, querySoFar))
 		{
-			querySoFar.extend(lead);
+			querySoFar.insert(lead);
 			this->runQueryHelper<Args...>(buildingChain, querySoFar, connectionType);
 			querySoFar.pop_back();
 			querySoFar.pop_back();
