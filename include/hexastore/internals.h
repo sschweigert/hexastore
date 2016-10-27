@@ -4,38 +4,6 @@
 #include <map>
 #include <set>
 
-struct InsertSpecific
-{
-
-	void operator()(std::set<HexastoreDataType*>& data, std::vector<QueryChain>& toAdd, HexastoreDataType* middle, HexastoreDataType* specificVal)
-	{
-		if (data.count(specificVal) == 1)
-		{
-			QueryChain newNode; 
-			newNode.insert(middle);
-			newNode.insert(specificVal);
-			toAdd.push_back(newNode);
-		}
-	}
-
-};
-
-struct InsertAll
-{
-
-	void operator()(std::set<HexastoreDataType*>& data, std::vector<QueryChain>& toAdd, HexastoreDataType* root)
-	{
-		for (auto& bottom : data)
-		{
-			QueryChain newChain;
-			newChain.insert(root);
-			newChain.insert(bottom);
-			toAdd.push_back(newChain);
-		}
-	}
-
-};
-
 struct BottomNode 
 {
 
@@ -118,6 +86,38 @@ struct RootNode
 		std::map<HexastoreDataType*, MiddleNode> data;
 
 
+
+};
+
+struct InsertSpecific
+{
+
+	void operator()(std::set<HexastoreDataType*>& data, std::vector<QueryChain>& toAdd, HexastoreDataType* middle, HexastoreDataType* specificVal)
+	{
+		if (data.count(specificVal) == 1)
+		{
+			QueryChain newNode; 
+			newNode.insert(middle);
+			newNode.insert(specificVal);
+			toAdd.push_back(newNode);
+		}
+	}
+
+};
+
+struct InsertAll
+{
+
+	void operator()(std::set<HexastoreDataType*>& data, std::vector<QueryChain>& toAdd, HexastoreDataType* root)
+	{
+		for (auto& bottom : data)
+		{
+			QueryChain newChain;
+			newChain.insert(root);
+			newChain.insert(bottom);
+			toAdd.push_back(newChain);
+		}
+	}
 
 };
 
