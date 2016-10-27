@@ -28,10 +28,10 @@ struct BottomNode
 
 		bool remove(HexastoreDataType* bottom);
 
-		template <class Algorithm, class ...Args>
-			void insertConnections(std::vector<QueryChain>& toAdd, HexastoreDataType* middle, Args... args)
+		template <class Algorithm>
+			void insertConnections(std::vector<QueryChain>& toAdd, HexastoreDataType* middle, Algorithm& algorithm)
 			{
-				Algorithm()(data, toAdd, middle, args...);
+				algorithm(data, toAdd, middle);
 			}
 
 	private:
@@ -52,14 +52,14 @@ struct MiddleNode
 
 		bool remove(HexastoreDataType* middle, HexastoreDataType* bottom);
 
-		template <class Algorithm, class ...Args>
-			void insertConnections(std::vector<QueryChain>& toAdd, Args... args)
+		template <class Algorithm>
+			void insertConnections(std::vector<QueryChain>& toAdd, Algorithm& algorithm)
 			{
 				for (auto& connection : data)
 				{
 					HexastoreDataType* edge = connection.first;
 					BottomNode& bottomNode = connection.second;
-					bottomNode.insertConnections<Algorithm>(toAdd, edge, args...);
+					bottomNode.insertConnections<Algorithm>(toAdd, edge, algorithm);
 				}
 			}
 
@@ -81,14 +81,14 @@ struct RootNode
 		bool remove(HexastoreDataType* top, HexastoreDataType* middle, HexastoreDataType* bottom);
 
 		template <class Algorithm, class ...Args>
-			std::vector<QueryChain> getConnections(HexastoreDataType* root, Args... args)
+			std::vector<QueryChain> getConnections(HexastoreDataType* root, Algorithm& algorithm)
 			{
 				std::vector<QueryChain> toReturn;
 
 				if (data.count(root) == 1)
 				{
 					MiddleNode& middleNode = data[root];
-					middleNode.insertConnections<Algorithm>(toReturn, args...);
+					middleNode.insertConnections(toReturn, algorithm);
 				}
 
 				return toReturn;
@@ -105,7 +105,11 @@ struct RootNode
 struct InsertSpecific
 {
 
-	void operator()(std::set<HexastoreDataType*>& data, std::vector<QueryChain>& toAdd, HexastoreDataType* middle, HexastoreDataType* specificVal)
+	InsertSpecific(HexastoreDataType* specificVal) :
+	specificVal(specificVal)
+	{}
+
+	void operator()(std::set<HexastoreDataType*>& data, std::vector<QueryChain>& toAdd, HexastoreDataType* middle)
 	{
 		if (data.count(specificVal) == 1)
 		{
@@ -113,6 +117,8 @@ struct InsertSpecific
 			toAdd.push_back(newNode);
 		}
 	}
+
+	HexastoreDataType* specificVal;
 
 };
 

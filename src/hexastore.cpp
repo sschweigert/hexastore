@@ -103,10 +103,12 @@ void Hexastore::remove(HexastoreDataType* subject, HexastoreDataType* predicate,
 
 std::vector<QueryChain> Hexastore::getConnectedVertices(HexastoreDataType* top, RootType rootType)
 {
-	return roots[rootType].getConnections<InsertAll>(top);
+	InsertAll algorithm;
+	return roots[rootType].getConnections(top, algorithm);
 }
 
 std::vector<QueryChain> Hexastore::getConnections(HexastoreDataType* root, HexastoreDataType* bottom, RootType rootType)
 {
-	return roots[rootType].getConnections<InsertSpecific>(root, bottom);
+	InsertSpecific algorithm(bottom);
+	return roots[rootType].getConnections<InsertSpecific>(root, algorithm);
 }
