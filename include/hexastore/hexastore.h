@@ -14,19 +14,20 @@ struct Hexastore
 
 	public:
 
-		// Insert a Subject-Predicate-Object triplet into the hexastore
+		// Insert a Subject-Predicate-Object triplet into the hexastore.
 		void insert(HexastoreDataType* subject, HexastoreDataType* predicate, HexastoreDataType* object);
 
-		// Check if a Subject-Predicate-Object triplet exists in the hexastore
+		// Check if a Subject-Predicate-Object triplet exists in the hexastore.
 		bool contains(HexastoreDataType* subject, HexastoreDataType* predicate, HexastoreDataType* object);
 
-		// Remove a Subhect-Predicate-Object triplet from the hexastore
+		// Remove a Subhect-Predicate-Object triplet from the hexastore.
 		void remove(HexastoreDataType* subject, HexastoreDataType* predicate, HexastoreDataType* object);
 
-		// Obtain a vector containing all the connections to all the neighbor vertices of a chosen vertex
+		// Obtain a vector containing all the connections to all the neighbor vertices of a chosen vertex.
 		std::vector<QueryChain> getConnectedVertices(HexastoreDataType* top, RootType rootType);
 
-		// Obtain a vector containing all the connections between two vertices
+		// Obtain a vector containing all the connections between two vertices. This must be a vector because
+		// two vertices can connect with multiple different paths.
 		std::vector<QueryChain> getConnections(HexastoreDataType* root, HexastoreDataType* bottom, RootType rootType);
 
 		template <class ...Args>
@@ -49,7 +50,7 @@ struct Hexastore
 
 		RootNode roots[6];	
 
-	public:
+	private:
 
 		template <class SearchStrategy, class ...Args>
 			void runQueryHelper(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType);

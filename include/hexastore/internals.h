@@ -4,6 +4,19 @@
 #include <map>
 #include <set>
 
+// This file contains the internals of the hexastore. It contains classes defining the levels
+// within the hexastore. Each level in the database contains a few basic functions, like
+// insertion/removal and checking if elements exist in the object.
+
+// Member functions within the Hexastore class will usually call functions on its RootNode
+// objects. These function calls propagate from the RootNode to the MiddleNode and
+// finally the BottomNode.
+
+// Each class also contains a templated function used to query the data within the hexastore.
+// This was originally two different functions, but I used templates to combine them
+// into one generic function that takes in functors as template argument.
+
+
 struct BottomNode 
 {
 
@@ -89,6 +102,7 @@ struct RootNode
 
 };
 
+// Retrieves the QueryChains where the bottom node matches a given value.
 struct InsertSpecific
 {
 
@@ -105,15 +119,16 @@ struct InsertSpecific
 
 };
 
+// Retrieves the QueryChains generated from all the connections to the bottom nodes.
 struct InsertAll
 {
 
-	void operator()(std::set<HexastoreDataType*>& data, std::vector<QueryChain>& toAdd, HexastoreDataType* root)
+	void operator()(std::set<HexastoreDataType*>& data, std::vector<QueryChain>& toAdd, HexastoreDataType* middle)
 	{
 		for (auto& bottom : data)
 		{
 			QueryChain newChain;
-			newChain.insert(root);
+			newChain.insert(middle);
 			newChain.insert(bottom);
 			toAdd.push_back(newChain);
 		}
