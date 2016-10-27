@@ -83,7 +83,9 @@ inline void Hexastore::runQueryHelper<Push>(std::vector<QueryChain>& buildingCha
 	template <class SearchStrategy, class ...Args>
 inline void Hexastore::runQueryHelper(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
 {
-	// This is a relatively inefficient way of doing this
+	// This is a relatively inefficient way of doing this due to the large number
+	// of copies that will occur with nested queries
+
 	std::vector<QueryChain> leads = SearchStrategy::getLeads(*this, querySoFar, connectionType);
 
 	for (QueryChain& lead : leads)

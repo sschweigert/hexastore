@@ -52,7 +52,6 @@ struct MiddleNode
 
 		bool remove(HexastoreDataType* middle, HexastoreDataType* bottom);
 
-
 		template <class Algorithm, class ...Args>
 			void insertConnections(std::vector<QueryChain>& toAdd, Args... args)
 			{
@@ -110,9 +109,7 @@ struct InsertSpecific
 	{
 		if (data.count(specificVal) == 1)
 		{
-			QueryChain newNode; 
-			newNode.insert(middle);
-			newNode.insert(specificVal);
+			QueryChain newNode(middle, specificVal); 
 			toAdd.push_back(newNode);
 		}
 	}
@@ -127,9 +124,7 @@ struct InsertAll
 	{
 		for (auto& bottom : data)
 		{
-			QueryChain newChain;
-			newChain.insert(middle);
-			newChain.insert(bottom);
+			QueryChain newChain(middle, bottom);
 			toAdd.push_back(newChain);
 		}
 	}
