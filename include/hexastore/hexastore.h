@@ -30,6 +30,7 @@ struct Hexastore
 		// two vertices can connect with multiple different paths.
 		std::vector<QueryChain> getConnections(HexastoreDataType* root, HexastoreDataType* bottom, RootType rootType);
 
+		
 		template <class ...Args>
 			void runQuery(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType);
 
