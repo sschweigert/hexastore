@@ -14,7 +14,7 @@ class SubQueryIterator
 		SubQueryIterator(Hexastore& hexastore, Functor& functor, Args... args) :
 			hexastore(hexastore),
 			functor(functor),
-			subIterator(hexastore, args...)
+			subQueryIterator(hexastore, args...)
 	{
 		rootIterator = hexastore.roots[spo].begin();
 		middleIterator = rootIterator->second.begin();
@@ -23,13 +23,13 @@ class SubQueryIterator
 
 		bool hasNext()
 		{
-			return (rootIterator == hexastore.roots[spo].end());
+			return (rootIterator != hexastore.roots[spo].end());
 		}
 
 		void recursiveChainBuilding(QueryChain& querySoFar)
 		{
-			querySoFar.insert(*middleIterator, *bottomIterator);
-			subIterator.recursiveChainBuilding(querySoFar);
+			querySoFar.insert(middleIterator->first, *bottomIterator);
+			subQueryIterator.recursiveChainBuilding(querySoFar);
 		}
 
 		bool increment(QueryChain& querySoFar)
@@ -49,9 +49,18 @@ class SubQueryIterator
 					querySoFar.insert(middleIterator->first, *bottomIterator);
 				}
 
-			return subIterator.increment(querySoFar);
+			return subQueryIterator.increment(querySoFar);
 		}
 
+		bool incrementNecessary(QueryChain& querySoFar)
+		{
+			querySoFar.insert(middleIterator->first, *bottomIterator);
+			if (!Functor()(querySoFar))
+				return true;
+			else
+				return subQueryIterator.incrementNecessary(querySoFar);
+		}
+	
 	private:
 
 		bool incrementIterators()
@@ -87,7 +96,7 @@ class SubQueryIterator
 
 		Functor& functor;
 
-		SubQueryIterator<Args...> subIterator;	
+		SubQueryIterator<Args...> subQueryIterator;	
 
 };
 
@@ -113,7 +122,7 @@ class SubQueryIterator<Functor>
 
 		void recursiveChainBuilding(QueryChain& querySoFar)
 		{
-			querySoFar.insert(*middleIterator, *bottomIterator);
+			querySoFar.insert(middleIterator->first, *bottomIterator);
 		}
 
 		bool increment(QueryChain& querySoFar)
@@ -134,6 +143,12 @@ class SubQueryIterator<Functor>
 				}
 
 			return true;
+		}
+
+		bool incrementNecessary(QueryChain& querySoFar)
+		{
+			querySoFar.insert(middleIterator->first, *bottomIterator);
+			return (!Functor()(querySoFar));
 		}
 
 	private:
@@ -181,7 +196,8 @@ class QueryIterator
 		QueryIterator(Hexastore& hexastore, Functor& functor, Args... args) :
 			subQueryIterator(hexastore, functor, args...)
 	{
-		increment();
+		if (incrementNecessary())
+			increment();
 	}
 
 
@@ -203,6 +219,12 @@ class QueryIterator
 
 	private:
 
+		bool incrementNecessary()
+		{
+			QueryChain querySoFar;
+			return subQueryIterator.incrementNecessary(querySoFar);
+		}
+	
 		void increment()
 		{
 			QueryChain querySoFar;

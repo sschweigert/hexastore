@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 
 	hexastore.insert(people[0], getFriend(), people[2]);
 
-	std::cout << "Relationships: " << std::endl;
+//	std::cout << "Relationships: " << std::endl;
 	/*
 	for (auto person : people)
 	{
@@ -60,12 +60,19 @@ int main(int argc, char *argv[])
 	ExampleFunctor one;
 	ExampleFunctor two;
 	QueryIterator<ExampleFunctor, ExampleFunctor> queryIterator(hexastore, one, two);
+	
+	while (queryIterator.hasNext())
+	{
+		std::cout << queryIterator.next() << std::endl;
+	}
 
+	/*
 	std::cout << "Result: " << std::endl;
 
 	auto directedTriangles = findNonDirectedTriangles(hexastore); 
 
 	std::cout << directedTriangles << std::endl;
+	*/
 	
 	return 0;
 }
