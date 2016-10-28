@@ -7,6 +7,20 @@
 struct Push 
 {};
 
+template <class ...Args>
+void Hexastore::runQueryOnAllRoots(std::vector<QueryChain>& buildingChain, RootType connectionType)
+{
+	for (auto& triangleRoot : roots[connectionType].data)
+	{
+		HexastoreDataType* topNode = triangleRoot.first;
+
+		QueryChain buildingQuery;
+		buildingQuery.insert(topNode);
+
+		runQuery<Args...>(buildingChain, buildingQuery, connectionType);
+	}
+}
+
 
 	template <class ...Args>
 void Hexastore::runQuery(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)

@@ -34,9 +34,13 @@ struct BottomNode
 				algorithm(data, toAdd, middle);
 			}
 
+		typedef std::set<HexastoreDataType*> collection;
+
+		typedef collection::const_iterator const_iterator;
+
 	private:
 
-		std::set<HexastoreDataType*> data;
+		collection data;
 
 
 };
@@ -63,9 +67,13 @@ struct MiddleNode
 				}
 			}
 
+		typedef std::map<HexastoreDataType*, BottomNode> collection;
+	
+		typedef collection::const_iterator const_iterator;
+
 	private:
 
-		std::map<HexastoreDataType*, BottomNode> data;	
+		collection data;	
 
 };
 
@@ -94,8 +102,11 @@ struct RootNode
 				return toReturn;
 			}
 
+		typedef std::map<HexastoreDataType*, MiddleNode> collection;
 
-		std::map<HexastoreDataType*, MiddleNode> data;
+		typedef collection::const_iterator const_iterator;
+
+		collection data;
 
 
 

@@ -36,18 +36,7 @@ struct Hexastore
 
 		// Runs a query on all root nodes, one by one
 		template <class ...Args>
-			void runQueryOnAllRoots(std::vector<QueryChain>& buildingChain, RootType connectionType)
-			{
-				for (auto& triangleRoot : roots[connectionType].data)
-				{
-					HexastoreDataType* topNode = triangleRoot.first;
-
-					QueryChain buildingQuery;
-					buildingQuery.insert(topNode);
-
-					runQuery<Args...>(buildingChain, buildingQuery, connectionType);
-				}
-			}
+			void runQueryOnAllRoots(std::vector<QueryChain>& buildingChain, RootType connectionType);
 
 		RootNode roots[6];	
 
