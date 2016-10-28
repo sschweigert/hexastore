@@ -4,10 +4,22 @@
 #include <hexastore/output.h>
 #include <hexastore/triangle_detection.h>
 #include <hexastore/relationships.h>
+#include <hexastore/query_iterator.h>
 
 #include <string>
 
 #include <iostream>
+
+struct ExampleFunctor
+{
+
+	bool operator()(QueryChain& querySoFar)
+	{
+		return true;
+	}
+
+
+};
 
 int main(int argc, char *argv[])
 {
@@ -44,6 +56,10 @@ int main(int argc, char *argv[])
 		}
 	}
 	*/
+
+	ExampleFunctor one;
+	ExampleFunctor two;
+	QueryIterator<ExampleFunctor, ExampleFunctor> queryIterator(hexastore, one, two);
 
 	std::cout << "Result: " << std::endl;
 

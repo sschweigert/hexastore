@@ -22,6 +22,10 @@ struct BottomNode
 
 	public:
 
+		typedef std::set<HexastoreDataType*> collection;
+
+		typedef collection::const_iterator const_iterator;
+
 		bool contains(HexastoreDataType* bottom);
 
 		void insert(HexastoreDataType* bottom);
@@ -34,9 +38,15 @@ struct BottomNode
 				algorithm(data, toAdd, middle);
 			}
 
-		typedef std::set<HexastoreDataType*> collection;
+		const_iterator begin() const
+		{
+			return data.begin();
+		}
 
-		typedef collection::const_iterator const_iterator;
+		const_iterator end() const
+		{
+			return data.end();
+		}
 
 	private:
 
@@ -49,6 +59,10 @@ struct MiddleNode
 {
 
 	public:
+
+		typedef std::map<HexastoreDataType*, BottomNode> collection;
+	
+		typedef collection::const_iterator const_iterator;
 
 		bool contains(HexastoreDataType* middle, HexastoreDataType* bottom);
 
@@ -67,9 +81,15 @@ struct MiddleNode
 				}
 			}
 
-		typedef std::map<HexastoreDataType*, BottomNode> collection;
-	
-		typedef collection::const_iterator const_iterator;
+		const_iterator begin() const
+		{
+			return data.begin();
+		}
+
+		const_iterator end() const
+		{
+			return data.end();
+		}
 
 	private:
 
@@ -81,6 +101,10 @@ struct RootNode
 {
 
 	public:
+
+		typedef std::map<HexastoreDataType*, MiddleNode> collection;
+
+		typedef collection::const_iterator const_iterator;
 
 		bool contains(HexastoreDataType* top, HexastoreDataType* middle, HexastoreDataType* bottom);
 
@@ -102,9 +126,16 @@ struct RootNode
 				return toReturn;
 			}
 
-		typedef std::map<HexastoreDataType*, MiddleNode> collection;
+		const_iterator begin() const
+		{
+			return data.begin();
+		}
 
-		typedef collection::const_iterator const_iterator;
+		const_iterator end() const
+		{
+			return data.end();
+		}
+
 
 		collection data;
 
