@@ -13,17 +13,17 @@
 
 int main(int argc, char *argv[])
 {
-
 	const int datasetSize = 1000;
+
+	// Import some names from a .csv
 	std::vector<HexastoreValueType> nameData = readNameCSV("../data/names.csv");
 
-	Hexastore hexastore;
+	// Create a dataset out of the names (records with unique indices, but not necessarily unique names)
 	DataSet people(nameData, datasetSize);
 
-	std::cout << "Dataset: " << std::endl;
-	//std::cout << people << std::endl;
-	std::cout << "------------------------------" << std::endl;
+	Hexastore hexastore;
 
+	// Make each person a friend to the next person in the store.
 	for (int i = 0; i < people.size(); i++)
 	{
 		int nextIndex = (i + 1) % people.size();
@@ -32,18 +32,10 @@ int main(int argc, char *argv[])
 
 	hexastore.insert(people[2], getFriend(), people[0]);
 
+
+
 	std::cout << "Relationships: " << std::endl;
-	for (int i = 0; i < people.size(); i++)
-	{
-		std::vector<QueryChain> chains = hexastore.getConnectedVertices(people[i], spo);
-		for (auto chain : chains)
-		{
-			QueryChain tempChain;
-			tempChain.insert(people[i]);
-			tempChain.insert(chain);
-			std::cout << tempChain << std::endl;
-		}
-	}
+	std::cout << hexastore << std::endl;
 
 	std::cout << "Query Results: " << std::endl;
 

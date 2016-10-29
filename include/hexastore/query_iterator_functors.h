@@ -3,7 +3,7 @@
 
 struct Descending
 {
-	bool operator()(QueryChain& querySoFar)
+	bool operator()(const QueryChain& querySoFar)
 	{
 		return querySoFar.back() < querySoFar.offsetBack(2);
 	}
@@ -11,7 +11,7 @@ struct Descending
 
 struct Ascending 
 {
-	bool operator()(QueryChain& querySoFar)
+	bool operator()(const QueryChain& querySoFar)
 	{
 		return querySoFar.back() > querySoFar.offsetBack(2);
 	}
@@ -19,9 +19,17 @@ struct Ascending
 
 struct Return
 {
-	bool operator()(QueryChain& querySoFar)
+	bool operator()(const QueryChain& querySoFar)
 	{
 		return querySoFar.back() == querySoFar.front();
+	}
+};
+
+struct AcceptAll
+{
+	bool operator()(const QueryChain& querySoFar)
+	{
+		return true;
 	}
 };
 

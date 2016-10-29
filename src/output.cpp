@@ -1,5 +1,8 @@
 #include <hexastore/output.h>
 
+#include <hexastore/query_iterator.h>
+#include <hexastore/query_iterator_functors.h>
+
 std::ostream& operator<<(std::ostream& os, const HexastoreDataType& dataType)
 {
 	os << (dataType.index);
@@ -16,6 +19,19 @@ std::ostream& operator<<(std::ostream& os, const QueryChain& dataType)
 		os << *data;
 		
 		first = false;
+	}
+	return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const Hexastore& hexastore)
+{
+	AcceptAll functor;
+	QueryIterator<AcceptAll> queryIterator(hexastore, functor);	
+
+	while (queryIterator.hasNext())
+	{
+		std::cout << queryIterator.next();
+
 	}
 	return os;
 }

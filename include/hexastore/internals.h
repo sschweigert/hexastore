@@ -26,14 +26,14 @@ struct BottomNode
 
 		typedef collection::const_iterator const_iterator;
 
-		bool contains(HexastoreDataType* bottom);
+		bool contains(HexastoreDataType* bottom) const;
 
 		void insert(HexastoreDataType* bottom);
 
 		bool remove(HexastoreDataType* bottom);
 
 		template <class Algorithm>
-			void insertConnections(std::vector<QueryChain>& toAdd, HexastoreDataType* middle, Algorithm& algorithm)
+			void insertConnections(std::vector<QueryChain>& toAdd, HexastoreDataType* middle, Algorithm& algorithm) const
 			{
 				algorithm(data, toAdd, middle);
 			}
@@ -64,19 +64,19 @@ struct MiddleNode
 	
 		typedef collection::const_iterator const_iterator;
 
-		bool contains(HexastoreDataType* middle, HexastoreDataType* bottom);
+		bool contains(HexastoreDataType* middle, HexastoreDataType* bottom) const;
 
 		void insert(HexastoreDataType* middle, HexastoreDataType* bottom);
 
 		bool remove(HexastoreDataType* middle, HexastoreDataType* bottom);
 
 		template <class Algorithm>
-			void insertConnections(std::vector<QueryChain>& toAdd, Algorithm& algorithm)
+			void insertConnections(std::vector<QueryChain>& toAdd, Algorithm& algorithm) const
 			{
 				for (auto& connection : data)
 				{
 					HexastoreDataType* edge = connection.first;
-					BottomNode& bottomNode = connection.second;
+					const BottomNode& bottomNode = connection.second;
 					bottomNode.insertConnections<Algorithm>(toAdd, edge, algorithm);
 				}
 			}
@@ -106,20 +106,20 @@ struct RootNode
 
 		typedef collection::const_iterator const_iterator;
 
-		bool contains(HexastoreDataType* top, HexastoreDataType* middle, HexastoreDataType* bottom);
+		bool contains(HexastoreDataType* top, HexastoreDataType* middle, HexastoreDataType* bottom) const;
 
 		void insert(HexastoreDataType* top, HexastoreDataType* middle, HexastoreDataType* bottom);
 
 		bool remove(HexastoreDataType* top, HexastoreDataType* middle, HexastoreDataType* bottom);
 
 		template <class Algorithm, class ...Args>
-			std::vector<QueryChain> getConnections(HexastoreDataType* root, Algorithm& algorithm)
+			std::vector<QueryChain> getConnections(HexastoreDataType* root, Algorithm& algorithm) const
 			{
 				std::vector<QueryChain> toReturn;
 
 				if (data.count(root) == 1)
 				{
-					MiddleNode& middleNode = data[root];
+					const MiddleNode& middleNode = data.at(root);
 					middleNode.insertConnections(toReturn, algorithm);
 				}
 
@@ -151,7 +151,7 @@ struct InsertSpecific
 	specificVal(specificVal)
 	{}
 
-	void operator()(std::set<HexastoreDataType*>& data, std::vector<QueryChain>& toAdd, HexastoreDataType* middle)
+	void operator()(const std::set<HexastoreDataType*>& data, std::vector<QueryChain>& toAdd, HexastoreDataType* middle)
 	{
 		if (data.count(specificVal) == 1)
 		{
@@ -168,7 +168,7 @@ struct InsertSpecific
 struct InsertAll
 {
 
-	void operator()(std::set<HexastoreDataType*>& data, std::vector<QueryChain>& toAdd, HexastoreDataType* middle)
+	void operator()(const std::set<HexastoreDataType*>& data, std::vector<QueryChain>& toAdd, HexastoreDataType* middle)
 	{
 		for (auto& bottom : data)
 		{

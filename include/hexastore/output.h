@@ -5,6 +5,7 @@
 
 #include <hexastore/datatypes.h>
 #include <hexastore/query_chain.h>
+#include <hexastore/hexastore.h>
 
 // This file just contains operator<< functions designed to make output easier 
 // for debugging/testing purposes
@@ -58,5 +59,7 @@ std::ostream& operator<<(std::ostream& os, const std::vector<DataType*>& collect
 }
 
 std::ostream& operator<<(std::ostream& os, const QueryChain& dataType);
+
+std::ostream& operator<<(std::ostream& os, const Hexastore& hexastore);
 
 #endif

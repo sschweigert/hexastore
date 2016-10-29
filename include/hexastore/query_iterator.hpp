@@ -2,7 +2,7 @@
 #define _HEXASTORE_QUERY_ITERATOR_HPP_
 
 template <class Functor, class ...Args>
-QueryIterator<Functor, Args...>::QueryIterator(Hexastore& hexastore, Functor& functor, Args... args) :
+QueryIterator<Functor, Args...>::QueryIterator(const Hexastore& hexastore, Functor& functor, Args... args) :
 	rootIterator(hexastore.roots[spo].begin()),
 	subQueryIterator(hexastore, rootIterator->second, functor, args...),
 	hexastore(hexastore)

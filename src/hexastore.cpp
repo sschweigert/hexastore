@@ -25,12 +25,12 @@ void Hexastore::insert(HexastoreDataType* subject, HexastoreDataType* predicate,
 	(roots[osp]).insert(object, subject, predicate);
 }
 
-bool Hexastore::contains(HexastoreDataType* subject, HexastoreDataType* predicate, HexastoreDataType* object)
+bool Hexastore::contains(HexastoreDataType* subject, HexastoreDataType* predicate, HexastoreDataType* object) const
 {
 	return (roots[spo]).contains(subject, predicate, object);
 }
 
-bool RootNode::contains(HexastoreDataType* top, HexastoreDataType* middle, HexastoreDataType* bottom)
+bool RootNode::contains(HexastoreDataType* top, HexastoreDataType* middle, HexastoreDataType* bottom) const
 {
 	if (data.count(top) == 0)
 	{
@@ -38,11 +38,11 @@ bool RootNode::contains(HexastoreDataType* top, HexastoreDataType* middle, Hexas
 	}
 	else
 	{
-		return (data[top]).contains(middle, bottom);
+		return (data.at(top)).contains(middle, bottom);
 	}
 }
 
-bool MiddleNode::contains(HexastoreDataType* middle, HexastoreDataType* bottom)
+bool MiddleNode::contains(HexastoreDataType* middle, HexastoreDataType* bottom) const
 {
 	if (data.count(middle) == 0)
 	{
@@ -50,16 +50,16 @@ bool MiddleNode::contains(HexastoreDataType* middle, HexastoreDataType* bottom)
 	}
 	else
 	{
-		return (data[middle]).contains(bottom);
+		return (data.at(middle)).contains(bottom);
 	}
 }
 
-bool BottomNode::contains(HexastoreDataType* bottom)
+bool BottomNode::contains(HexastoreDataType* bottom) const
 {
 	return (data.count(bottom) == 1);
 }
 
-bool BottomNode::remove(HexastoreDataType* bottom)
+bool BottomNode::remove(HexastoreDataType* bottom) 
 {
 	if (data.count(bottom) == 1)
 	{
@@ -68,7 +68,7 @@ bool BottomNode::remove(HexastoreDataType* bottom)
 	return (data.size() == 1);
 }
 
-bool MiddleNode::remove(HexastoreDataType* middle, HexastoreDataType* bottom)
+bool MiddleNode::remove(HexastoreDataType* middle, HexastoreDataType* bottom) 
 {
 	if (data.count(middle) == 1)
 	{
@@ -101,13 +101,13 @@ void Hexastore::remove(HexastoreDataType* subject, HexastoreDataType* predicate,
 	(roots[osp]).remove(object, subject, predicate);
 }
 
-std::vector<QueryChain> Hexastore::getConnectedVertices(HexastoreDataType* top, RootType rootType)
+std::vector<QueryChain> Hexastore::getConnectedVertices(HexastoreDataType* top, RootType rootType) const
 {
 	InsertAll algorithm;
 	return roots[rootType].getConnections(top, algorithm);
 }
 
-std::vector<QueryChain> Hexastore::getConnections(HexastoreDataType* root, HexastoreDataType* bottom, RootType rootType)
+std::vector<QueryChain> Hexastore::getConnections(HexastoreDataType* root, HexastoreDataType* bottom, RootType rootType) const
 {
 	InsertSpecific algorithm(bottom);
 	return roots[rootType].getConnections<InsertSpecific>(root, algorithm);

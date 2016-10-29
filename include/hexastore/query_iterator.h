@@ -32,7 +32,7 @@ class QueryIterator
 		// list of functors. The number of functors specified will dictate the length of the chain.
 		// For example QueryIterator<AcceptAll, AcceptAll, AcceptAll> will return all the chains
 		// of length 3 within the hexastore.
-		QueryIterator(Hexastore& hexastore, Functor& functor, Args... args);
+		QueryIterator(const Hexastore& hexastore, Functor& functor, Args... args);
 
 		// Return the next element in the iteration and increments the iterator.
 		QueryChain next();
@@ -49,7 +49,7 @@ class QueryIterator
 		// iterator will end up in a state where hasNext() evaluates to false.
 		void increment();
 
-		Hexastore& hexastore;
+		const Hexastore& hexastore;
 
 		// Iterates over the root nodes in the hexastore and provides the first entry in 
 		// the returned QueryChains.

@@ -7,13 +7,13 @@ class SubQueryIterator
 
 	public:
 
-		SubQueryIterator(Hexastore& hexastore, const MiddleNode& root, Functor& functor, Args... args) :
+		SubQueryIterator(const Hexastore& hexastore, const MiddleNode& root, Functor& functor, Args... args) :
 			hexastore(hexastore),
 			functor(functor),
 			middleIterator(middleNode->begin()),
 			bottomIterator(middleIterator->second.begin()),
 			middleNode(&root),
-			subQueryIterator(hexastore, hexastore.roots[spo].data[*bottomIterator], args...)
+			subQueryIterator(hexastore, hexastore.roots[spo].data.at(*bottomIterator), args...)
 	{
 	}
 
@@ -30,7 +30,7 @@ class SubQueryIterator
 
 			if (hexastore.roots[spo].data.count(*bottomIterator) == 1)
 			{
-				return subQueryIterator.reset(hexastore.roots[spo].data[*bottomIterator]);
+				return subQueryIterator.reset(hexastore.roots[spo].data.at(*bottomIterator));
 			}
 			else
 			{
@@ -124,7 +124,7 @@ class SubQueryIterator
 			}
 			if (hexastore.roots[spo].data.count(*bottomIterator) == 1)
 			{
-				return subQueryIterator.reset(hexastore.roots[spo].data[*bottomIterator]);
+				return subQueryIterator.reset(hexastore.roots[spo].data.at(*bottomIterator));
 			}
 			else
 			{
@@ -132,7 +132,7 @@ class SubQueryIterator
 			}
 		}
 
-		Hexastore& hexastore;
+		const Hexastore& hexastore;
 
 		const MiddleNode* middleNode;
 
@@ -152,7 +152,7 @@ class SubQueryIterator<Functor>
 
 	public:
 
-		SubQueryIterator(Hexastore& hexastore, const MiddleNode& middleNode, Functor& functor) :
+		SubQueryIterator(const Hexastore& hexastore, const MiddleNode& middleNode, Functor& functor) :
 			hexastore(hexastore),
 			middleIterator(middleNode.begin()),
 			bottomIterator(middleIterator->second.begin()),
@@ -224,7 +224,7 @@ class SubQueryIterator<Functor>
 			return true;
 		}
 
-		Hexastore& hexastore;
+		const Hexastore& hexastore;
 
 		const MiddleNode* middleNode;
 

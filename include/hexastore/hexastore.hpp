@@ -8,7 +8,7 @@ struct Push
 {};
 
 template <class ...Args>
-void Hexastore::runQueryOnAllRoots(std::vector<QueryChain>& buildingChain, RootType connectionType)
+void Hexastore::runQueryOnAllRoots(std::vector<QueryChain>& buildingChain, RootType connectionType) const
 {
 	for (auto& triangleRoot : roots[connectionType].data)
 	{
@@ -23,7 +23,7 @@ void Hexastore::runQueryOnAllRoots(std::vector<QueryChain>& buildingChain, RootT
 
 
 	template <class ...Args>
-void Hexastore::runQuery(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
+void Hexastore::runQuery(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType) const
 {
 	// Delegate to the helper function
 	runQueryHelper<Args..., Push>(buildingChain, querySoFar, connectionType);
@@ -31,14 +31,14 @@ void Hexastore::runQuery(std::vector<QueryChain>& buildingChain, QueryChain& que
 
 // Specialization of runQuery which pushes the value to the vector, thereby ending the recursion
 	template <>
-inline void Hexastore::runQueryHelper<Push>(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
+inline void Hexastore::runQueryHelper<Push>(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType) const
 {
 	buildingChain.push_back(querySoFar);
 }
 
 
 	template <class SearchStrategy, class ...Args>
-inline void Hexastore::runQueryHelper(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType)
+inline void Hexastore::runQueryHelper(std::vector<QueryChain>& buildingChain, QueryChain& querySoFar, RootType connectionType) const
 {
 	// This is a relatively inefficient way of doing this due to the large number
 	// of copies that will occur with nested queries
