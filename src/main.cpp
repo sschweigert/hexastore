@@ -10,6 +10,22 @@
 
 #include <iostream>
 
+struct Descending
+{
+	bool operator()(QueryChain& querySoFar)
+	{
+		return querySoFar.back() < querySoFar.offsetBack(2);
+	}
+};
+
+struct Ascending 
+{
+	bool operator()(QueryChain& querySoFar)
+	{
+		return querySoFar.back() > querySoFar.offsetBack(2);
+	}
+};
+
 struct ExampleFunctor
 {
 
@@ -55,6 +71,8 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	std::cout << "Query Results: " << std::endl;
+
 	ExampleFunctor one;
 	ExampleFunctor two;
 	ExampleFunctor three;
@@ -64,6 +82,7 @@ int main(int argc, char *argv[])
 	
 	while (queryIterator.hasNext())
 	{
+		//queryIterator.next();
 		std::cout << queryIterator.next() << std::endl;
 	}
 

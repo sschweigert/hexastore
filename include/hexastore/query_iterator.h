@@ -3,6 +3,9 @@
 
 #include <hexastore/internals.h>
 #include <hexastore/hexastore.h>
+#include <hexastore/output.h>
+
+#include <iostream>
 
 template <class Functor, class ...Args>
 class SubQueryIterator
@@ -36,6 +39,12 @@ class SubQueryIterator
 
 		bool increment(QueryChain& querySoFar)
 		{
+			while (subQueryIterator.increment(querySoFar))
+			{
+				if (!incrementNecessary(querySoFar))
+					return true;
+			}
+
 			do
 			{
 
@@ -49,11 +58,13 @@ class SubQueryIterator
 					querySoFar.pop_back();
 					querySoFar.pop_back();
 
-					if(incrementIterators())
+					if(!incrementIterators())
 						return false;
 
 					querySoFar.insert(middleIterator->first, *bottomIterator);
 				}
+					querySoFar.pop_back();
+					querySoFar.pop_back();
 
 				subQueryIterator.reset(hexastore.roots[spo].data[*bottomIterator]);
 			} while (incrementNecessary(querySoFar) && !subQueryIterator.increment(querySoFar));
@@ -64,10 +75,17 @@ class SubQueryIterator
 		bool incrementNecessary(QueryChain& querySoFar)
 		{
 			querySoFar.insert(middleIterator->first, *bottomIterator);
-			if (!Functor()(querySoFar))
+			bool matchesFunctor = Functor()(querySoFar);
+
+			if (!matchesFunctor)
 				return true;
 			else
-				return subQueryIterator.incrementNecessary(querySoFar);
+			{
+				bool subQueryResult = subQueryIterator.incrementNecessary(querySoFar);
+				querySoFar.pop_back();
+				querySoFar.pop_back();
+				return subQueryResult;
+			}
 		}
 
 	private:
@@ -140,7 +158,7 @@ class SubQueryIterator<Functor>
 				querySoFar.pop_back();
 				querySoFar.pop_back();
 
-				if(incrementIterators())
+				if(!incrementIterators())
 					return false;
 
 				querySoFar.insert(middleIterator->first, *bottomIterator);
@@ -152,7 +170,11 @@ class SubQueryIterator<Functor>
 		bool incrementNecessary(QueryChain& querySoFar)
 		{
 			querySoFar.insert(middleIterator->first, *bottomIterator);
-			return (!Functor()(querySoFar));
+			bool matchesFunctor = Functor()(querySoFar);
+			querySoFar.pop_back();
+			querySoFar.pop_back();
+
+			return (!matchesFunctor);
 		}
 
 		void reset(const MiddleNode& newMiddle)
@@ -215,6 +237,7 @@ class QueryIterator
 			QueryChain toReturn(rootIterator->first);
 			subQueryIterator.recursiveChainBuilding(toReturn);
 
+
 			increment();
 
 			return toReturn;
@@ -230,6 +253,7 @@ class QueryIterator
 		bool incrementNecessary()
 		{
 			QueryChain querySoFar;
+			querySoFar.insert(rootIterator->first);
 			return subQueryIterator.incrementNecessary(querySoFar);
 		}
 
@@ -239,7 +263,6 @@ class QueryIterator
 
 			while (rootIterator != hexastore.roots[spo].end() && !validStateFound)
 			{
-
 				QueryChain querySoFar(rootIterator->first);
 				validStateFound = subQueryIterator.increment(querySoFar);
 				if (!validStateFound)

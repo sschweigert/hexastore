@@ -72,6 +72,11 @@ class QueryChain
 			return data.back();	
 		}
 
+		Collection::const_reference offsetBack(int offset) const
+		{
+			return data[data.size() - 1 - offset];
+		}
+
 		Collection::size_type size() const
 		{
 			return data.size();
