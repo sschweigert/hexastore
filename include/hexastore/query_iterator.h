@@ -3,9 +3,6 @@
 
 #include <hexastore/internals.h>
 #include <hexastore/hexastore.h>
-#include <hexastore/output.h>
-
-#include <iostream>
 
 template <class Functor, class ...Args>
 class SubQueryIterator
@@ -24,13 +21,16 @@ class SubQueryIterator
 	}
 
 		
+		// Reset the iterator so that it points to a new MiddleNode for iterator.
+		// This behaves the same as the constructor. The reason I did this instead of reusing the constructor
+		// is that there is no need to reset the hexastore and functor references.
 		bool reset(const MiddleNode& newMiddle)
 		{
+			// Setting the iterator to point to the start of the node iteration.
 			middleNode = &newMiddle;
 			middleIterator = middleNode->begin();
 			bottomIterator = middleIterator->second.begin();
 
-			//
 			if (hexastore.roots[spo].data.count(*bottomIterator) == 1)
 			{
 				return subQueryIterator.reset(hexastore.roots[spo].data[*bottomIterator]);
@@ -60,21 +60,30 @@ class SubQueryIterator
 		{
 			do
 			{
+				// Increment the sub-iterator until it can no longer be incremented
+				// because there are no more elements, or a valid state was found.
 				while (incrementSubQueryIterator(querySoFar))
 				{
 					if (!incrementNecessary(querySoFar))
 					{
+						// Valid state was found, so the increment was successful.
 						return true;
 					}
 				}
 
+				// The sub-iterator had no more valid states, so adjust the sub-iterator
+				// to a new root that can be searched. The new sub-iterator will automatically
+				// be pointing to a first element, but this element may not satisfy the functors.
 				if(!incrementIterators())
 				{
+					// The end of the available sub-iterators has been reached, so 
+					// increment has surely failed.
 					return false;
 				}
 
+			// Must check that the new iterator points to an element that satisfies the functors,
+			// and if not then that sub-iterator must be incremented until it does.
 			} while (incrementNecessary(querySoFar));
-
 
 			return true;
 		}
@@ -230,6 +239,7 @@ class SubQueryIterator<Functor>
 
 };
 
+// An iterator which operates on a hexastore and increments according to
 template <class Functor, class ...Args>
 class QueryIterator
 {
@@ -241,23 +251,26 @@ class QueryIterator
 			subQueryIterator(hexastore, rootIterator->second, functor, args...),
 			hexastore(hexastore)
 	{
+		// It's possible that the iterator points to an invalid entry at the start.
+		// If that's the case, then it must be incremented before the client uses it.
 		if (incrementNecessary())
 			increment();
 	}
 
 
-		// Returns the next element in the iteration.
+		// Return the next element in the iteration and increments the iterator.
 		QueryChain next()
 		{
 			QueryChain toReturn(rootIterator->first);
 			subQueryIterator.recursiveChainBuilding(toReturn);
 	
-
+			// Increment the iterator so it points to the next element
 			increment();
 
 			return toReturn;
 		}
 
+		// If true, a value can be obtained from the iterator.
 		bool hasNext()
 		{
 			return rootIterator != hexastore.roots[spo].end();
@@ -265,6 +278,7 @@ class QueryIterator
 
 	private:
 
+		// Check if the current state of the iterator satisfies all of its functors.
 		bool incrementNecessary()
 		{
 			QueryChain querySoFar;
@@ -272,6 +286,8 @@ class QueryIterator
 			return subQueryIterator.incrementNecessary(querySoFar);
 		}
 
+		// Increment the iterator to the next valid state. If there's no valid state the 
+		// iterator will end up in a state where hasNext() evaluates to false.
 		void increment()
 		{
 			bool validStateFound = false;
@@ -284,6 +300,7 @@ class QueryIterator
 				if (!validStateFound)
 				{
 					++rootIterator;
+
 					if (!hasNext())
 						return;
 	
@@ -298,8 +315,12 @@ class QueryIterator
 
 		Hexastore& hexastore;
 
+		// Iterates over the root nodes in the hexastore and provides the first entry in 
+		// the returned QueryChains.
 		RootNode::const_iterator rootIterator;
 
+		// A recursive structure in which each element generates the next two elements in
+		// the returned QueryChains.
 		SubQueryIterator<Functor, Args...> subQueryIterator;
 
 
