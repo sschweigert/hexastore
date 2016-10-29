@@ -1,20 +1,19 @@
 #ifndef _HEXASTORE_QUERY_ITERATOR_HPP_
 #define _HEXASTORE_QUERY_ITERATOR_HPP_
 
-	template <class Functor, class ...Args>
-		QueryIterator<Functor, Args...>::QueryIterator(Hexastore& hexastore, Functor& functor, Args... args) :
-			rootIterator(hexastore.roots[spo].begin()),
-			subQueryIterator(hexastore, rootIterator->second, functor, args...),
-			hexastore(hexastore)
-	{
-		// It's possible that the iterator points to an invalid entry at the start.
-		// If that's the case, then it must be incremented before the client uses it.
-		if (incrementNecessary())
-			increment();
-	}
+template <class Functor, class ...Args>
+QueryIterator<Functor, Args...>::QueryIterator(Hexastore& hexastore, Functor& functor, Args... args) :
+	rootIterator(hexastore.roots[spo].begin()),
+	subQueryIterator(hexastore, rootIterator->second, functor, args...),
+	hexastore(hexastore)
+{
+	// It's possible that the iterator points to an invalid entry at the start.
+	// If that's the case, then it must be incremented before the client uses it.
+	if (incrementNecessary())
+		increment();
+}
 
-// Return the next element in the iteration and increments the iterator.
-	template <class Functor, class ...Args>
+template <class Functor, class ...Args>
 QueryChain QueryIterator<Functor, Args...>::next()
 {
 	QueryChain toReturn(rootIterator->first);
@@ -26,13 +25,13 @@ QueryChain QueryIterator<Functor, Args...>::next()
 	return toReturn;
 }
 
-	template <class Functor, class ...Args>
+template <class Functor, class ...Args>
 bool QueryIterator<Functor, Args...>::hasNext()
 {
 	return rootIterator != hexastore.roots[spo].end();
 }
 
-	template <class Functor, class ...Args>
+template <class Functor, class ...Args>
 bool QueryIterator<Functor, Args...>::incrementNecessary()
 {
 	QueryChain querySoFar;
@@ -40,7 +39,7 @@ bool QueryIterator<Functor, Args...>::incrementNecessary()
 	return subQueryIterator.incrementNecessary(querySoFar);
 }
 
-	template <class Functor, class ...Args>
+template <class Functor, class ...Args>
 void QueryIterator<Functor, Args...>::increment()
 {
 	bool validStateFound = false;
