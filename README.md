@@ -9,14 +9,18 @@ http://karras.rutgers.edu/hexastore.pdf
 
 - The paper points out that the last table in the structure is duplicated and memory can be saved by only allocating it once. This has yet to be implemented.
 
-## Files to look at:
+## Important Interface Files:
 
 include/hexastore/hexastore.h
 
-include/hexastore/internals.h
+include/hexastore/query_iterator.h
 
 include/hexastore/triangle_detection.h
 
+# Example executables:
+
 src/triangle_detection.cpp
+
+# Unit-test file:
 
 test/hexastore_test.h
