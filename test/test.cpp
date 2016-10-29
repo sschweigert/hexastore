@@ -59,7 +59,7 @@ public:
 
 static class TestDescription_suite_AddingAndRemoving_testNonDirectedTriangles : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_AddingAndRemoving_testNonDirectedTriangles() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 155, "testNonDirectedTriangles" ) {}
+ TestDescription_suite_AddingAndRemoving_testNonDirectedTriangles() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 161, "testNonDirectedTriangles" ) {}
  void runTest() { suite_AddingAndRemoving.testNonDirectedTriangles(); }
 } testDescription_suite_AddingAndRemoving_testNonDirectedTriangles;
 

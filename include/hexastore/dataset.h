@@ -28,6 +28,16 @@ class DataSet
 		// \brief Obtain a pointer to an element in the DataSet
 		HexastoreDataType* operator[](std::size_t idx);
 
+		std::vector<HexastoreDataType>::const_iterator begin() const
+		{
+			return data.begin();
+		}
+
+		std::vector<HexastoreDataType>::const_iterator end() const
+		{
+			return data.end();
+		}
+
 	private:
 
 		// Underlying storage mechanism

@@ -4,26 +4,28 @@
 #include <hexastore/internals.h>
 #include <hexastore/hexastore.h>
 
-
 template <class Functor, class ...Args>
 class SubQueryIterator
 {
 
 	public:
 
-		SubQueryIterator(Hexastore& hexastore, Functor& functor, Args... args) :
+		SubQueryIterator(Hexastore& hexastore, const MiddleNode& root, Functor& functor, Args... args) :
 			hexastore(hexastore),
 			functor(functor),
-			subQueryIterator(hexastore, args...)
+			middleIterator(middleNode->begin()),
+			bottomIterator(middleIterator->second.begin()),
+			middleNode(&root),
+			subQueryIterator(hexastore, hexastore.roots[spo].data[*bottomIterator], args...)
 	{
-		rootIterator = hexastore.roots[spo].begin();
-		middleIterator = rootIterator->second.begin();
-		bottomIterator = middleIterator->second.begin();
 	}
 
-		bool hasNext()
+		void reset(const MiddleNode& newMiddle)
 		{
-			return (rootIterator != hexastore.roots[spo].end());
+			middleNode = &newMiddle;
+			middleIterator = middleNode->begin();
+			bottomIterator = middleIterator->second.begin();
+			subQueryIterator.reset(hexastore.roots[spo].data[*bottomIterator]);
 		}
 
 		void recursiveChainBuilding(QueryChain& querySoFar)
@@ -34,10 +36,14 @@ class SubQueryIterator
 
 		bool increment(QueryChain& querySoFar)
 		{
-			if(!incrementIterators())
-				return false;
+			do
+			{
 
-			querySoFar.insert(middleIterator->first, *bottomIterator);
+				if(!incrementIterators())
+					return false;
+
+				querySoFar.insert(middleIterator->first, *bottomIterator);
+
 				while (!Functor()(querySoFar))
 				{
 					querySoFar.pop_back();
@@ -49,7 +55,10 @@ class SubQueryIterator
 					querySoFar.insert(middleIterator->first, *bottomIterator);
 				}
 
-			return subQueryIterator.increment(querySoFar);
+				subQueryIterator.reset(hexastore.roots[spo].data[*bottomIterator]);
+			} while (incrementNecessary(querySoFar) && !subQueryIterator.increment(querySoFar));
+
+			return true;
 		}
 
 		bool incrementNecessary(QueryChain& querySoFar)
@@ -60,7 +69,7 @@ class SubQueryIterator
 			else
 				return subQueryIterator.incrementNecessary(querySoFar);
 		}
-	
+
 	private:
 
 		bool incrementIterators()
@@ -71,28 +80,23 @@ class SubQueryIterator
 			{
 				++middleIterator;
 
-				if (middleIterator == rootIterator->second.end())
+				if (middleIterator == middleNode->end())
 				{
-					++rootIterator;
-					if (rootIterator == hexastore.roots[spo].end())
-					{
-						return false;
-					}	
-					middleIterator = rootIterator->second.begin();
+					return false;
 				}
 				bottomIterator = middleIterator->second.begin();
 			}
 			return true;
 		}
 
+		Hexastore& hexastore;
 
-		RootNode::const_iterator rootIterator;
+		const MiddleNode* middleNode;
 
 		MiddleNode::const_iterator middleIterator;
 
 		BottomNode::const_iterator bottomIterator;		
 
-		Hexastore& hexastore;
 
 		Functor& functor;
 
@@ -106,19 +110,16 @@ class SubQueryIterator<Functor>
 
 	public:
 
-		SubQueryIterator(Hexastore& hexastore, Functor& functor) :
+		SubQueryIterator(Hexastore& hexastore, const MiddleNode& middleNode, Functor& functor) :
 			hexastore(hexastore),
+			middleIterator(middleNode.begin()),
+			bottomIterator(middleIterator->second.begin()),
+			middleNode(&middleNode),
 			functor(functor)
 	{
-		rootIterator = hexastore.roots[spo].begin();
-		middleIterator = rootIterator->second.begin();
+		middleIterator = middleNode.begin();
 		bottomIterator = middleIterator->second.begin();
 	}
-
-		bool hasNext()
-		{
-			return (rootIterator == hexastore.roots[spo].end());
-		}
 
 		void recursiveChainBuilding(QueryChain& querySoFar)
 		{
@@ -128,19 +129,22 @@ class SubQueryIterator<Functor>
 		bool increment(QueryChain& querySoFar)
 		{
 			if(!incrementIterators())
+			{
 				return false;
+			}
+	
 
 			querySoFar.insert(middleIterator->first, *bottomIterator);
-				while (!Functor()(querySoFar))
-				{
-					querySoFar.pop_back();
-					querySoFar.pop_back();
+			while (!Functor()(querySoFar))
+			{
+				querySoFar.pop_back();
+				querySoFar.pop_back();
 
-					if(incrementIterators())
-						return false;
+				if(incrementIterators())
+					return false;
 
-					querySoFar.insert(middleIterator->first, *bottomIterator);
-				}
+				querySoFar.insert(middleIterator->first, *bottomIterator);
+			}
 
 			return true;
 		}
@@ -149,6 +153,13 @@ class SubQueryIterator<Functor>
 		{
 			querySoFar.insert(middleIterator->first, *bottomIterator);
 			return (!Functor()(querySoFar));
+		}
+
+		void reset(const MiddleNode& newMiddle)
+		{
+			middleNode = &newMiddle;
+			middleIterator = middleNode->begin();
+			bottomIterator = middleIterator->second.begin();
 		}
 
 	private:
@@ -161,27 +172,22 @@ class SubQueryIterator<Functor>
 			{
 				++middleIterator;
 
-				if (middleIterator == rootIterator->second.end())
+				if (middleIterator == middleNode->end())
 				{
-					++rootIterator;
-					if (rootIterator == hexastore.roots[spo].end())
-					{
-						return false;
-					}	
-					middleIterator = rootIterator->second.begin();
+					return false;
 				}
 				bottomIterator = middleIterator->second.begin();
 			}
 			return true;
 		}
 
-		RootNode::const_iterator rootIterator;
+		Hexastore& hexastore;
+
+		const MiddleNode* middleNode;
 
 		MiddleNode::const_iterator middleIterator;
 
 		BottomNode::const_iterator bottomIterator;		
-
-		Hexastore& hexastore;
 
 		Functor& functor;
 
@@ -194,7 +200,9 @@ class QueryIterator
 	public:
 
 		QueryIterator(Hexastore& hexastore, Functor& functor, Args... args) :
-			subQueryIterator(hexastore, functor, args...)
+			rootIterator(hexastore.roots[spo].begin()),
+			subQueryIterator(hexastore, rootIterator->second, functor, args...),
+			hexastore(hexastore)
 	{
 		if (incrementNecessary())
 			increment();
@@ -204,7 +212,7 @@ class QueryIterator
 		// Returns the next element in the iteration.
 		QueryChain next()
 		{
-			QueryChain toReturn;
+			QueryChain toReturn(rootIterator->first);
 			subQueryIterator.recursiveChainBuilding(toReturn);
 
 			increment();
@@ -214,7 +222,7 @@ class QueryIterator
 
 		bool hasNext()
 		{
-			return subQueryIterator.hasNext();
+			return rootIterator != hexastore.roots[spo].end();
 		}
 
 	private:
@@ -224,14 +232,32 @@ class QueryIterator
 			QueryChain querySoFar;
 			return subQueryIterator.incrementNecessary(querySoFar);
 		}
-	
+
 		void increment()
 		{
-			QueryChain querySoFar;
-			subQueryIterator.increment(querySoFar);
+			bool validStateFound = false;
+
+			while (rootIterator != hexastore.roots[spo].end() && !validStateFound)
+			{
+
+				QueryChain querySoFar(rootIterator->first);
+				validStateFound = subQueryIterator.increment(querySoFar);
+				if (!validStateFound)
+				{
+					++rootIterator;
+					subQueryIterator.reset(rootIterator->second);
+					if (!incrementNecessary())
+						break;
+				}
+			}
 		}
 
+		Hexastore& hexastore;
+
+		RootNode::const_iterator rootIterator;
+
 		SubQueryIterator<Functor, Args...> subQueryIterator;
+
 
 };
 

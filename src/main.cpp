@@ -42,24 +42,25 @@ int main(int argc, char *argv[])
 
 	hexastore.insert(people[0], getFriend(), people[2]);
 
-//	std::cout << "Relationships: " << std::endl;
-	/*
-	for (auto person : people)
+	std::cout << "Relationships: " << std::endl;
+	for (int i = 0; i < people.size(); i++)
 	{
-		std::vector<QueryChain> chains = hexastore.getConnectedVertices(person, spo);
+		std::vector<QueryChain> chains = hexastore.getConnectedVertices(people[i], spo);
 		for (auto chain : chains)
 		{
 			QueryChain tempChain;
-			tempChain.insert(person);
+			tempChain.insert(people[i]);
 			tempChain.insert(chain);
 			std::cout << tempChain << std::endl;
 		}
 	}
-	*/
 
 	ExampleFunctor one;
 	ExampleFunctor two;
-	QueryIterator<ExampleFunctor, ExampleFunctor> queryIterator(hexastore, one, two);
+	ExampleFunctor three;
+	QueryIterator<ExampleFunctor, ExampleFunctor, ExampleFunctor> queryIterator(hexastore, one, two, three);
+	//QueryIterator<ExampleFunctor, ExampleFunctor> queryIterator(hexastore, one, two);
+	//QueryIterator<ExampleFunctor> queryIterator(hexastore, one);
 	
 	while (queryIterator.hasNext())
 	{
