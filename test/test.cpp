@@ -25,41 +25,41 @@ bool suite_AddingAndRemoving_init = false;
 static AddingAndRemoving suite_AddingAndRemoving;
 
 static CxxTest::List Tests_AddingAndRemoving = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_AddingAndRemoving( "hexastore_test.h", 11, "AddingAndRemoving", suite_AddingAndRemoving, Tests_AddingAndRemoving );
+CxxTest::StaticSuiteDescription suiteDescription_AddingAndRemoving( "hexastore_test.h", 12, "AddingAndRemoving", suite_AddingAndRemoving, Tests_AddingAndRemoving );
 
 static class TestDescription_suite_AddingAndRemoving_testCyclicalQueryChain : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_AddingAndRemoving_testCyclicalQueryChain() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 31, "testCyclicalQueryChain" ) {}
+ TestDescription_suite_AddingAndRemoving_testCyclicalQueryChain() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 32, "testCyclicalQueryChain" ) {}
  void runTest() { suite_AddingAndRemoving.testCyclicalQueryChain(); }
 } testDescription_suite_AddingAndRemoving_testCyclicalQueryChain;
 
 static class TestDescription_suite_AddingAndRemoving_testInsertionRemoval : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_AddingAndRemoving_testInsertionRemoval() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 66, "testInsertionRemoval" ) {}
+ TestDescription_suite_AddingAndRemoving_testInsertionRemoval() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 67, "testInsertionRemoval" ) {}
  void runTest() { suite_AddingAndRemoving.testInsertionRemoval(); }
 } testDescription_suite_AddingAndRemoving_testInsertionRemoval;
 
 static class TestDescription_suite_AddingAndRemoving_testForwardDirectedTriangleDetection : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_AddingAndRemoving_testForwardDirectedTriangleDetection() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 89, "testForwardDirectedTriangleDetection" ) {}
+ TestDescription_suite_AddingAndRemoving_testForwardDirectedTriangleDetection() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 90, "testForwardDirectedTriangleDetection" ) {}
  void runTest() { suite_AddingAndRemoving.testForwardDirectedTriangleDetection(); }
 } testDescription_suite_AddingAndRemoving_testForwardDirectedTriangleDetection;
 
 static class TestDescription_suite_AddingAndRemoving_testReverseDirectedTriangleDetection : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_AddingAndRemoving_testReverseDirectedTriangleDetection() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 109, "testReverseDirectedTriangleDetection" ) {}
+ TestDescription_suite_AddingAndRemoving_testReverseDirectedTriangleDetection() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 111, "testReverseDirectedTriangleDetection" ) {}
  void runTest() { suite_AddingAndRemoving.testReverseDirectedTriangleDetection(); }
 } testDescription_suite_AddingAndRemoving_testReverseDirectedTriangleDetection;
 
 static class TestDescription_suite_AddingAndRemoving_testThreeNodeDoubleTriangle : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_AddingAndRemoving_testThreeNodeDoubleTriangle() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 132, "testThreeNodeDoubleTriangle" ) {}
+ TestDescription_suite_AddingAndRemoving_testThreeNodeDoubleTriangle() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 147, "testThreeNodeDoubleTriangle" ) {}
  void runTest() { suite_AddingAndRemoving.testThreeNodeDoubleTriangle(); }
 } testDescription_suite_AddingAndRemoving_testThreeNodeDoubleTriangle;
 
 static class TestDescription_suite_AddingAndRemoving_testNonDirectedTriangles : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_AddingAndRemoving_testNonDirectedTriangles() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 161, "testNonDirectedTriangles" ) {}
+ TestDescription_suite_AddingAndRemoving_testNonDirectedTriangles() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 176, "testNonDirectedTriangles" ) {}
  void runTest() { suite_AddingAndRemoving.testNonDirectedTriangles(); }
 } testDescription_suite_AddingAndRemoving_testNonDirectedTriangles;
 

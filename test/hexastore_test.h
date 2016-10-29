@@ -7,6 +7,7 @@
 #include <hexastore/datastore.h>
 #include <hexastore/relationships.h>
 #include <hexastore/triangle_detection.h>
+#include <hexastore/output.h>
 
 class AddingAndRemoving : public CxxTest::TestSuite
 {
@@ -15,7 +16,7 @@ class AddingAndRemoving : public CxxTest::TestSuite
 
 		AddingAndRemoving() :
 		names(readNameCSV("../data/names.csv")),
-		people(names, 1000)
+		people(names, 5)
 		{}
 
 		// Override function which setups the tests
@@ -89,6 +90,7 @@ class AddingAndRemoving : public CxxTest::TestSuite
 		void testForwardDirectedTriangleDetection(void)
 		{
 			Hexastore hexastore;
+
 			// Everybody is a friend of the person next to them
 			for (int i = 0; i < people.size(); i++)
 			{
@@ -114,6 +116,19 @@ class AddingAndRemoving : public CxxTest::TestSuite
 			{
 				int nextIndex = (i + 1) % 3;
 				hexastore.insert(people[nextIndex], getFriend(), people[i]);
+			}
+
+			std::cout << "Relationships: " << std::endl;
+			for (int i = 0; i < people.size(); i++)
+			{
+				std::vector<QueryChain> chains = hexastore.getConnectedVertices(people[i], spo);
+				for (auto chain : chains)
+				{
+					QueryChain tempChain;
+					tempChain.insert(people[i]);
+					tempChain.insert(chain);
+					std::cout << tempChain << std::endl;
+				}
 			}
 
 			// Add more loop back from 2 -> 0

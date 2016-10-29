@@ -5,42 +5,16 @@
 #include <hexastore/triangle_detection.h>
 #include <hexastore/relationships.h>
 #include <hexastore/query_iterator.h>
+#include <hexastore/query_iterator_functors.h>
 
 #include <string>
 
 #include <iostream>
 
-struct Descending
-{
-	bool operator()(QueryChain& querySoFar)
-	{
-		return querySoFar.back() < querySoFar.offsetBack(2);
-	}
-};
-
-struct Ascending 
-{
-	bool operator()(QueryChain& querySoFar)
-	{
-		return querySoFar.back() > querySoFar.offsetBack(2);
-	}
-};
-
-struct ExampleFunctor
-{
-
-	bool operator()(QueryChain& querySoFar)
-	{
-		return true;
-	}
-
-
-};
-
 int main(int argc, char *argv[])
 {
 
-	const int datasetSize = 4;
+	const int datasetSize = 1000;
 	std::vector<HexastoreValueType> nameData = readNameCSV("../data/names.csv");
 
 	Hexastore hexastore;
@@ -56,7 +30,7 @@ int main(int argc, char *argv[])
 		hexastore.insert(people[i], getFriend(), people[nextIndex]);
 	}
 
-	hexastore.insert(people[0], getFriend(), people[2]);
+	hexastore.insert(people[2], getFriend(), people[0]);
 
 	std::cout << "Relationships: " << std::endl;
 	for (int i = 0; i < people.size(); i++)
@@ -73,18 +47,22 @@ int main(int argc, char *argv[])
 
 	std::cout << "Query Results: " << std::endl;
 
-	ExampleFunctor one;
-	ExampleFunctor two;
-	ExampleFunctor three;
-	QueryIterator<ExampleFunctor, ExampleFunctor, ExampleFunctor> queryIterator(hexastore, one, two, three);
-	//QueryIterator<ExampleFunctor, ExampleFunctor> queryIterator(hexastore, one, two);
-	//QueryIterator<ExampleFunctor> queryIterator(hexastore, one);
+	Descending one;
+	Descending two;
+	Descending three;
+	Return returnToRoot;
+	QueryIterator<Descending, Descending, Return> queryIterator(hexastore, one, one, returnToRoot);
+	//QueryIterator<Descending, Descending, Descending> queryIterator(hexastore, one, two, three);
+	//QueryIterator<Descending, Descending> queryIterator(hexastore, one, two);
+	//QueryIterator<Descending> queryIterator(hexastore, one);
 	
+	int i = 0;
 	while (queryIterator.hasNext())
 	{
-		//queryIterator.next();
-		std::cout << queryIterator.next() << std::endl;
+		queryIterator.next();
+		i++;
 	}
+	std::cout << "Num found: " << i << std::endl;
 
 	/*
 	std::cout << "Result: " << std::endl;

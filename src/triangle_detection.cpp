@@ -2,6 +2,8 @@
 
 #include <hexastore/hexastore.h>
 #include <hexastore/query_template_functions.hpp>
+#include <hexastore/query_iterator.h>
+#include <hexastore/query_iterator_functors.h>
 
 // This algorithm is based on the idea that triangles are either ascending or descending
 // ie. 0 -> 1 -> 2 -> 0   or   2 -> 1 -> 0 -> 2
@@ -16,10 +18,24 @@ std::vector<QueryChain> findDirectedTriangles(Hexastore& hexastore)
 	RootType rootType = spo;
 
 	// Descending order
-	hexastore.runQueryOnAllRoots<DescendingNode, DescendingNode, ReturnToRoot>(toReturn, rootType);
+	Descending descendingFunctor;
+	Return returnToRoot;
+	QueryIterator<Descending, Descending, Return> queryIterator(hexastore, descendingFunctor, descendingFunctor, returnToRoot);
+	while (queryIterator.hasNext())
+	{
+		toReturn.push_back(queryIterator.next());
+	}
+	//hexastore.runQueryOnAllRoots<DescendingNode, DescendingNode, ReturnToRoot>(toReturn, rootType);
+
+	Ascending ascendingFunctor;
+	QueryIterator<Ascending, Ascending, Return> ascendingItr(hexastore, ascendingFunctor, ascendingFunctor, returnToRoot);
+	while (ascendingItr.hasNext())
+	{
+		toReturn.push_back(ascendingItr.next());
+	}
 
 	// Ascending order
-	hexastore.runQueryOnAllRoots<AscendingNode, AscendingNode, ReturnToRoot>(toReturn, rootType);
+	//hexastore.runQueryOnAllRoots<AscendingNode, AscendingNode, ReturnToRoot>(toReturn, rootType);
 
 	return toReturn;	
 }
