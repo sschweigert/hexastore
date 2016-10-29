@@ -13,7 +13,7 @@
 
 int main(int argc, char *argv[])
 {
-	const int datasetSize = 1000;
+	const int datasetSize = 5;
 
 	// Import some names from a .csv
 	std::vector<HexastoreValueType> nameData = readNameCSV("../data/names.csv");
@@ -32,12 +32,14 @@ int main(int argc, char *argv[])
 
 	hexastore.insert(people[2], getFriend(), people[0]);
 
-
-
 	std::cout << "Relationships: " << std::endl;
 	std::cout << hexastore << std::endl;
 
-	std::cout << "Query Results: " << std::endl;
+	AcceptAll acceptAll;
+	Descending descending;
+	Ascending ascending;
+
+	//QueryIterator<AcceptAll> twoLength
 
 	Descending one;
 	Descending two;

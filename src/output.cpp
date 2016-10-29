@@ -32,6 +32,9 @@ std::ostream& operator<<(std::ostream& os, const Hexastore& hexastore)
 	{
 		std::cout << queryIterator.next();
 
+		if (queryIterator.hasNext())
+			std::cout << std::endl;
+
 	}
 	return os;
 }
