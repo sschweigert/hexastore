@@ -53,13 +53,13 @@ public:
 
 static class TestDescription_suite_AddingAndRemoving_testThreeNodeDoubleTriangle : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_AddingAndRemoving_testThreeNodeDoubleTriangle() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 147, "testThreeNodeDoubleTriangle" ) {}
+ TestDescription_suite_AddingAndRemoving_testThreeNodeDoubleTriangle() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 134, "testThreeNodeDoubleTriangle" ) {}
  void runTest() { suite_AddingAndRemoving.testThreeNodeDoubleTriangle(); }
 } testDescription_suite_AddingAndRemoving_testThreeNodeDoubleTriangle;
 
 static class TestDescription_suite_AddingAndRemoving_testNonDirectedTriangles : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_AddingAndRemoving_testNonDirectedTriangles() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 176, "testNonDirectedTriangles" ) {}
+ TestDescription_suite_AddingAndRemoving_testNonDirectedTriangles() : CxxTest::RealTestDescription( Tests_AddingAndRemoving, suiteDescription_AddingAndRemoving, 163, "testNonDirectedTriangles" ) {}
  void runTest() { suite_AddingAndRemoving.testNonDirectedTriangles(); }
 } testDescription_suite_AddingAndRemoving_testNonDirectedTriangles;
 
