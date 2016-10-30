@@ -1,6 +1,7 @@
 #ifndef _HEXASTORE_QUERY_TEMPLATE_FUNCTIONS_H_
 #define _HEXASTORE_QUERY_TEMPLATE_FUNCTIONS_H_
 
+// This is all deprecated by QueryIterator.
 
 struct DescendingNode
 {

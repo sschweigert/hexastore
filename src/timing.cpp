@@ -10,6 +10,8 @@
 #include <iostream>
 #include <ctime>
 
+// This file needs to be refactored.
+
 void horizontalLine()
 {
 	std::cout << "-------------------------------" << std::endl;
