@@ -24,89 +24,6 @@ SubQueryIteratorBase<Functor>(hexastore, middleNode, functor),
 {
 }
 
-	template <class Functor>
-void SubQueryIterator<Functor>::recursiveChainBuilding(QueryChain& querySoFar)
-{
-	querySoFar.insert(SubQueryIteratorBase<Functor>::middleIterator->first, *SubQueryIteratorBase<Functor>::bottomIterator);
-}
-
-	template <class Functor>
-bool SubQueryIterator<Functor>::increment(QueryChain& querySoFar)
-{
-	do
-	{
-		if(!incrementIterators())
-		{
-			return false;
-		}
-
-	}
-	while (incrementNecessary(querySoFar));
-
-	return true;
-}
-
-	template <class Functor>
-bool SubQueryIterator<Functor>::incrementNecessary(QueryChain& querySoFar)
-{
-	querySoFar.insert(SubQueryIteratorBase<Functor>::middleIterator->first, *SubQueryIteratorBase<Functor>::bottomIterator);
-
-
-	bool matchesFunctor = Functor()(querySoFar);
-
-	querySoFar.pop_back();
-	querySoFar.pop_back();
-
-
-	return (!matchesFunctor);
-}
-
-	template <class Functor>
-bool SubQueryIterator<Functor>::reset(const MiddleNode& newMiddle)
-{
-	SubQueryIteratorBase<Functor>::middleNodePtr = &newMiddle;
-	SubQueryIteratorBase<Functor>::middleIterator = SubQueryIteratorBase<Functor>::middleNodePtr->begin();
-	SubQueryIteratorBase<Functor>::bottomIterator = SubQueryIteratorBase<Functor>::middleIterator->second.begin();
-	return true;
-}
-
-	template <class Functor>
-bool SubQueryIterator<Functor>::incrementIterators()
-{
-	++SubQueryIteratorBase<Functor>::bottomIterator;
-
-	if (SubQueryIteratorBase<Functor>::bottomIterator == SubQueryIteratorBase<Functor>::middleIterator->second.end())
-	{
-		++SubQueryIteratorBase<Functor>::middleIterator;
-
-		if (SubQueryIteratorBase<Functor>::middleIterator == SubQueryIteratorBase<Functor>::middleNodePtr->end())
-		{
-			return false;
-		}
-		SubQueryIteratorBase<Functor>::bottomIterator = SubQueryIteratorBase<Functor>::middleIterator->second.begin();
-	}
-	return true;
-}
-
-
-	template <class Functor, class ...Args>
-bool SubQueryIterator<Functor, Args...>::reset(const MiddleNode& newMiddle)
-{
-	// Setting the iterator to point to the start of the node iteration.
-	SubQueryIteratorBase<Functor>::middleNodePtr = &newMiddle;
-	SubQueryIteratorBase<Functor>::middleIterator = SubQueryIteratorBase<Functor>::middleNodePtr->begin();
-	SubQueryIteratorBase<Functor>::bottomIterator = SubQueryIteratorBase<Functor>::middleIterator->second.begin();
-
-	if (SubQueryIteratorBase<Functor>::hexastore.roots[spo].data.count(*SubQueryIteratorBase<Functor>::bottomIterator) == 1)
-	{
-		return subQueryIterator.reset(SubQueryIteratorBase<Functor>::hexastore.roots[spo].data.at(*SubQueryIteratorBase<Functor>::bottomIterator));
-	}
-	else
-	{
-		return false;
-	}
-}
-
 	template <class Functor, class ...Args>
 void SubQueryIterator<Functor, Args...>::recursiveChainBuilding(QueryChain& querySoFar)
 {
@@ -114,14 +31,11 @@ void SubQueryIterator<Functor, Args...>::recursiveChainBuilding(QueryChain& quer
 	subQueryIterator.recursiveChainBuilding(querySoFar);
 }
 
-	template <class Functor, class ...Args>
-bool SubQueryIterator<Functor, Args...>::incrementSubQueryIterator(QueryChain& querySoFar)
+
+	template <class Functor>
+void SubQueryIterator<Functor>::recursiveChainBuilding(QueryChain& querySoFar)
 {
 	querySoFar.insert(SubQueryIteratorBase<Functor>::middleIterator->first, *SubQueryIteratorBase<Functor>::bottomIterator);
-	bool incrementSuccessful = subQueryIterator.increment(querySoFar);
-	querySoFar.pop_back();
-	querySoFar.pop_back();
-	return incrementSuccessful;
 }
 
 	template <class Functor, class ...Args>
@@ -157,6 +71,23 @@ bool SubQueryIterator<Functor, Args...>::increment(QueryChain& querySoFar)
 	return true;
 }
 
+
+	template <class Functor>
+bool SubQueryIterator<Functor>::increment(QueryChain& querySoFar)
+{
+	do
+	{
+		if(!incrementIterators())
+		{
+			return false;
+		}
+
+	}
+	while (incrementNecessary(querySoFar));
+
+	return true;
+}
+
 	template <class Functor, class ...Args>
 bool SubQueryIterator<Functor, Args...>::incrementNecessary(QueryChain& querySoFar)
 {
@@ -176,6 +107,68 @@ bool SubQueryIterator<Functor, Args...>::incrementNecessary(QueryChain& querySoF
 		querySoFar.pop_back();
 		return subQueryResult;
 	}
+}
+
+	template <class Functor>
+bool SubQueryIterator<Functor>::incrementNecessary(QueryChain& querySoFar)
+{
+	querySoFar.insert(SubQueryIteratorBase<Functor>::middleIterator->first, *SubQueryIteratorBase<Functor>::bottomIterator);
+
+
+	bool matchesFunctor = Functor()(querySoFar);
+
+	querySoFar.pop_back();
+	querySoFar.pop_back();
+
+
+	return (!matchesFunctor);
+}
+
+
+	template <class Functor, class ...Args>
+bool SubQueryIterator<Functor, Args...>::reset(const MiddleNode& newMiddle)
+{
+	// Setting the iterator to point to the start of the node iteration.
+	SubQueryIteratorBase<Functor>::middleNodePtr = &newMiddle;
+	SubQueryIteratorBase<Functor>::middleIterator = SubQueryIteratorBase<Functor>::middleNodePtr->begin();
+	SubQueryIteratorBase<Functor>::bottomIterator = SubQueryIteratorBase<Functor>::middleIterator->second.begin();
+
+	if (SubQueryIteratorBase<Functor>::hexastore.roots[spo].data.count(*SubQueryIteratorBase<Functor>::bottomIterator) == 1)
+	{
+		return subQueryIterator.reset(SubQueryIteratorBase<Functor>::hexastore.roots[spo].data.at(*SubQueryIteratorBase<Functor>::bottomIterator));
+	}
+	else
+	{
+		return false;
+	}
+}
+
+
+	template <class Functor>
+bool SubQueryIterator<Functor>::reset(const MiddleNode& newMiddle)
+{
+	SubQueryIteratorBase<Functor>::middleNodePtr = &newMiddle;
+	SubQueryIteratorBase<Functor>::middleIterator = SubQueryIteratorBase<Functor>::middleNodePtr->begin();
+	SubQueryIteratorBase<Functor>::bottomIterator = SubQueryIteratorBase<Functor>::middleIterator->second.begin();
+	return true;
+}
+
+	template <class Functor>
+bool SubQueryIterator<Functor>::incrementIterators()
+{
+	++SubQueryIteratorBase<Functor>::bottomIterator;
+
+	if (SubQueryIteratorBase<Functor>::bottomIterator == SubQueryIteratorBase<Functor>::middleIterator->second.end())
+	{
+		++SubQueryIteratorBase<Functor>::middleIterator;
+
+		if (SubQueryIteratorBase<Functor>::middleIterator == SubQueryIteratorBase<Functor>::middleNodePtr->end())
+		{
+			return false;
+		}
+		SubQueryIteratorBase<Functor>::bottomIterator = SubQueryIteratorBase<Functor>::middleIterator->second.begin();
+	}
+	return true;
 }
 
 	template <class Functor, class ...Args>
@@ -202,6 +195,16 @@ bool SubQueryIterator<Functor, Args...>::incrementIterators()
 	{
 		return false;
 	}
+}
+
+	template <class Functor, class ...Args>
+bool SubQueryIterator<Functor, Args...>::incrementSubQueryIterator(QueryChain& querySoFar)
+{
+	querySoFar.insert(SubQueryIteratorBase<Functor>::middleIterator->first, *SubQueryIteratorBase<Functor>::bottomIterator);
+	bool incrementSuccessful = subQueryIterator.increment(querySoFar);
+	querySoFar.pop_back();
+	querySoFar.pop_back();
+	return incrementSuccessful;
 }
 
 #endif

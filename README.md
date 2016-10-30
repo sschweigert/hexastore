@@ -28,3 +28,5 @@ test/hexastore_test.h
 - The paper points out that the last table in the structure is duplicated and memory can be saved by only allocating it once. This has yet to be implemented, although it is relatively trivial to do so.
 
 - Currently QueryIterator only operates on the spo direction. This is relatively easy to change, it just needs to be parameterized in some way. 
+
+- Documentation and refactoring ongoing

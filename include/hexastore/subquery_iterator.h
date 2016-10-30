@@ -1,6 +1,7 @@
 #ifndef _HEXASTORE_SUBQUERY_ITERATOR_H_
 #define _HEXASTORE_SUBQUERY_ITERATOR_H_
 
+
 template <class Functor>
 class SubQueryIteratorBase 
 {
