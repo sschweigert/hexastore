@@ -61,6 +61,18 @@ class QueryIterator
 
 };
 
+template <class ...Functors>
+std::vector<QueryChain> getQueryResults(const Hexastore& hexastore, Functors... functors)
+{
+	std::vector<QueryChain> toReturn;
+	QueryIterator<Functors...> queryIterator(hexastore, functors...);
+	while (queryIterator.hasNext())
+	{
+		toReturn.push_back(queryIterator.next());
+	}
+	return toReturn;
+}
+
 // Implementation
 #include <hexastore/query_iterator.hpp>
 

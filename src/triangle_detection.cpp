@@ -15,26 +15,25 @@ std::vector<QueryChain> findDirectedTriangles(Hexastore& hexastore)
 {
 	std::vector<QueryChain> toReturn;
 
-	RootType rootType = spo;
-
-	// Descending order
+	// Functors used to generate paths
+	Ascending ascendingFunctor;
 	Descending descendingFunctor;
 	Return returnToRoot;
-	QueryIterator<Descending, Descending, Return> queryIterator(hexastore, descendingFunctor, descendingFunctor, returnToRoot);
-	while (queryIterator.hasNext())
-	{
-		toReturn.push_back(queryIterator.next());
-	}
+
+	std::vector<QueryChain> result;
+
+	result = getQueryResults(hexastore, descendingFunctor, descendingFunctor, returnToRoot);
+	toReturn.insert(toReturn.end(), result.begin(), result.end());
+
+	result = getQueryResults(hexastore, ascendingFunctor, ascendingFunctor, returnToRoot);
+	toReturn.insert(toReturn.end(), result.begin(), result.end());
+
+	// This is the deprecated way. I want to do somet timing test to compare the two.
+	// RootType rootType = spo;
+	// Ascending order
 	//hexastore.runQueryOnAllRoots<DescendingNode, DescendingNode, ReturnToRoot>(toReturn, rootType);
 
-	Ascending ascendingFunctor;
-	QueryIterator<Ascending, Ascending, Return> ascendingItr(hexastore, ascendingFunctor, ascendingFunctor, returnToRoot);
-	while (ascendingItr.hasNext())
-	{
-		toReturn.push_back(ascendingItr.next());
-	}
-
-	// Ascending order
+	// Descending order
 	//hexastore.runQueryOnAllRoots<AscendingNode, AscendingNode, ReturnToRoot>(toReturn, rootType);
 
 	return toReturn;	
@@ -44,6 +43,9 @@ std::vector<QueryChain> findDirectedTriangles(Hexastore& hexastore)
 // one chain of one.   ie.   0 -> 1 -> 2 <- 0  
 std::vector<QueryResult> findNonDirectedTriangles(Hexastore& hexastore)
 {
+	// This is currently implemented in the old deprecated way. I will switch it when I have time.
+
+
 	std::vector<QueryResult> toReturn;
 
 	RootType rootType = spo;
