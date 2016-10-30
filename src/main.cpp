@@ -30,41 +30,52 @@ int main(int argc, char *argv[])
 		hexastore.insert(people[i], getFriend(), people[nextIndex]);
 	}
 
+	// Add another relationship
 	hexastore.insert(people[2], getFriend(), people[0]);
 
 	std::cout << "Relationships: " << std::endl;
-	std::cout << hexastore << std::endl;
+	std::cout << hexastore << "\n" << std::endl; 
 
+	// Functors used for query/path generation
 	AcceptAll acceptAll;
 	Descending descending;
 	Ascending ascending;
+	NotTheRoot notTheRoot;
 
-	//QueryIterator<AcceptAll> twoLength
+	QueryIterator<AcceptAll, AcceptAll> twoEdge(hexastore, acceptAll, acceptAll);
+	QueryIterator<AcceptAll, AcceptAll, AcceptAll> threeEdge(hexastore, acceptAll, acceptAll, acceptAll);
+	QueryIterator<AcceptAll, AcceptAll, AcceptAll, AcceptAll> fourEdge(hexastore, acceptAll, acceptAll, acceptAll, acceptAll);
 
-	Descending one;
-	Descending two;
-	Descending three;
-	Return returnToRoot;
-	QueryIterator<Descending, Descending, Return> queryIterator(hexastore, one, one, returnToRoot);
-	//QueryIterator<Descending, Descending, Descending> queryIterator(hexastore, one, two, three);
-	//QueryIterator<Descending, Descending> queryIterator(hexastore, one, two);
-	//QueryIterator<Descending> queryIterator(hexastore, one);
-	
-	int i = 0;
-	while (queryIterator.hasNext())
-	{
-		queryIterator.next();
-		i++;
-	}
-	std::cout << "Num found: " << i << std::endl;
+	QueryIterator<Ascending, Ascending> twoAscending(hexastore, ascending, ascending);
+	QueryIterator<Ascending, Ascending, Ascending> threeAscending(hexastore, ascending, ascending, ascending);
+	QueryIterator<Ascending, Ascending, Ascending, Ascending> fourAscending(hexastore, ascending, ascending, ascending, ascending);
 
-	/*
-	std::cout << "Result: " << std::endl;
+	auto directedTriangles = findDirectedTriangles(hexastore); 
+	auto nonDirectedTriangles = findNonDirectedTriangles(hexastore); 
 
-	auto directedTriangles = findNonDirectedTriangles(hexastore); 
+	std::cout << "Sub-paths with two edges:" << std::endl;
+	std::cout << twoEdge << "\n" << std::endl;
 
-	std::cout << directedTriangles << std::endl;
-	*/
+	std::cout << "Sub-paths with three edges:" << std::endl;
+	std::cout << threeEdge << "\n" << std::endl;
+
+	std::cout << "Sub-paths with four edges:" << std::endl;
+	std::cout << fourEdge << "\n" << std::endl;
+
+	std::cout << "Ascending sub-paths with two edges:" << std::endl;
+	std::cout << twoAscending << "\n" << std::endl;
+
+	std::cout << "Ascending sub-paths with three edges:" << std::endl;
+	std::cout << threeAscending << "\n" << std::endl;
+
+	std::cout << "Ascending sub-paths with four edges:" << std::endl;
+	std::cout << fourAscending << "\n" << std::endl;
+
+	std::cout << "Directed triangles: " << std::endl;
+	std::cout << directedTriangles << "\n" << std::endl;
+
+	std::cout << "Non-directed triangles: " << std::endl;
+	std::cout << nonDirectedTriangles << "\n" << std::endl;
 	
 	return 0;
 }

@@ -33,4 +33,12 @@ struct AcceptAll
 	}
 };
 
+struct NotTheRoot
+{
+	bool operator()(const QueryChain& querySoFar)
+	{
+		return querySoFar.back() != querySoFar.front();
+	}
+};
+
 #endif
