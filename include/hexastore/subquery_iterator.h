@@ -173,7 +173,34 @@ class SubQueryIterator<Functor>
 
 	public:
 
-		SubQueryIterator(const Hexastore& hexastore, const MiddleNode& middleNode, Functor& functor) :
+		SubQueryIterator(const Hexastore& hexastore, const MiddleNode& middleNode, Functor& functor);
+
+		void recursiveChainBuilding(QueryChain& querySoFar);
+
+		bool increment(QueryChain& querySoFar);
+
+		bool incrementNecessary(QueryChain& querySoFar);
+
+		bool reset(const MiddleNode& newMiddle);
+
+	private:
+
+		bool incrementIterators();
+
+		const Hexastore& hexastore;
+
+		const MiddleNode* middleNode;
+
+		MiddleNode::const_iterator middleIterator;
+
+		BottomNode::const_iterator bottomIterator;		
+
+		Functor& functor;
+
+};
+
+template <class Functor>
+		SubQueryIterator<Functor>::SubQueryIterator(const Hexastore& hexastore, const MiddleNode& middleNode, Functor& functor) :
 			hexastore(hexastore),
 			middleIterator(middleNode.begin()),
 			bottomIterator(middleIterator->second.begin()),
@@ -184,12 +211,14 @@ class SubQueryIterator<Functor>
 		bottomIterator = middleIterator->second.begin();
 	}
 
-		void recursiveChainBuilding(QueryChain& querySoFar)
+template <class Functor>
+		void SubQueryIterator<Functor>::recursiveChainBuilding(QueryChain& querySoFar)
 		{
 			querySoFar.insert(middleIterator->first, *bottomIterator);
 		}
 
-		bool increment(QueryChain& querySoFar)
+template <class Functor>
+		bool SubQueryIterator<Functor>::increment(QueryChain& querySoFar)
 		{
 			do
 			{
@@ -204,7 +233,8 @@ class SubQueryIterator<Functor>
 			return true;
 		}
 
-		bool incrementNecessary(QueryChain& querySoFar)
+template <class Functor>
+		bool SubQueryIterator<Functor>::incrementNecessary(QueryChain& querySoFar)
 		{
 			querySoFar.insert(middleIterator->first, *bottomIterator);
 
@@ -218,7 +248,8 @@ class SubQueryIterator<Functor>
 			return (!matchesFunctor);
 		}
 
-		bool reset(const MiddleNode& newMiddle)
+template <class Functor>
+		bool SubQueryIterator<Functor>::reset(const MiddleNode& newMiddle)
 		{
 			middleNode = &newMiddle;
 			middleIterator = middleNode->begin();
@@ -226,9 +257,8 @@ class SubQueryIterator<Functor>
 			return true;
 		}
 
-	private:
-
-		bool incrementIterators()
+template <class Functor>
+		bool SubQueryIterator<Functor>::incrementIterators()
 		{
 			++bottomIterator;
 
@@ -244,17 +274,5 @@ class SubQueryIterator<Functor>
 			}
 			return true;
 		}
-
-		const Hexastore& hexastore;
-
-		const MiddleNode* middleNode;
-
-		MiddleNode::const_iterator middleIterator;
-
-		BottomNode::const_iterator bottomIterator;		
-
-		Functor& functor;
-
-};
 
 #endif
