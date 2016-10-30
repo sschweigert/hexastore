@@ -4,7 +4,9 @@
 #include <iostream>
 #include <string>
 
-// The concrete data associated with
+// The concrete data associated with the hexastore. 
+// It might make sense to have this be a template parameter
+// of HexastoreDataType, instead of a typedef.
 typedef std::string HexastoreValueType;
 
 // Defines structured entry in the hexastore
