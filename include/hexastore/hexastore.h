@@ -23,6 +23,10 @@ struct Hexastore
 		// Remove a Subhect-Predicate-Object triplet from the hexastore.
 		void remove(HexastoreDataType* subject, HexastoreDataType* predicate, HexastoreDataType* object);
 
+		// NOTE: The functions below are deprecated. QueryIterator should be used instead (or, these functions
+		// should at least be re-implemented using QueryIterator.
+		// I have not gotten around to removing these functions since other (also deprecated) code relies on it.
+
 		// Obtain a vector containing all the connections to all the neighbor vertices of a chosen vertex.
 		std::vector<QueryChain> getConnectedVertices(HexastoreDataType* top, RootType rootType) const;
 
