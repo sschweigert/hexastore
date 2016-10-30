@@ -10,7 +10,7 @@
 // Any directed triangle can be expressed either as ascending from smallest node,
 // or descending from the largest node.
 // By only searching for triangles that start with these types of nodes, we can 
-// avoid duplicates.
+// implicitly avoid duplicates.
 std::vector<QueryChain> findDirectedTriangles(Hexastore& hexastore)
 {
 	std::vector<QueryChain> toReturn;
